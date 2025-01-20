@@ -1,39 +1,31 @@
-const UserModel = require('../models/user');
+const User = require('../models/user').User;
+const { NotFoundError, ValidationError, DatabaseError } = require('../core/error');
 
-const getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.find();
+const getAllUsers = async () => {
+  const users = await User.find();
 
-    if (!users || users.length === 0) {
-      throw new NotFoundError('Users');
-    }
-
-    return SuccessResponse.ok(res, users, 'Users retrieved successfully');
-  } catch (error) {
-    next(error);
+  if (!users || users.length === 0) {
+    throw new NotFoundError('Users');
   }
+
+  return users;
 };
 
-const createUser = async (req, res, next) => {
-  try {
-    if (!req.body.email || !req.body.password) {
-      throw new ValidationError('Email and password are required');
-    }
-
-    const user = new User(req.body);
-    const savedUser = await user.save();
-
-    if (!savedUser) {
-      throw new DatabaseError('Failed to create user');
-    }
-
-    return SuccessResponse.created(res, savedUser, 'User created successfully');
-  } catch (error) {
-    next(error);
+const createUser = async (userParam) => {
+  console.log(userParam);
+  if (!userParam.email || !userParam.password) {
+    throw new ValidationError('Email and password are required');
   }
+
+  const user = new User(userParam);
+  const savedUser = await user.save();
+
+  if (!savedUser) {
+    throw new DatabaseError('Failed to create user');
+  }
+  return savedUser;
 };
 
-// Exporting service functions
 module.exports = {
   getAllUsers,
   createUser

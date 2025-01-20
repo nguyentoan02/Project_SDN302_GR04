@@ -1,22 +1,12 @@
-// src/controllers/index.js
-
-const User = require('../models/user').User;
-
-exports.createUser = async (req, res) => {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).send(user);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
+const { SuccessResponse } = require('../core/success');
+const { createUser, getAllUsers } = require('../services/user.service');
 
 exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).send(users);
-  } catch (error) {
-    res.status(500).send(error);
-  }
+  const users = await getAllUsers();
+  return SuccessResponse.ok(res, users, 'Users retrieved successfully');
+};
+
+exports.createUser = async (req, res) => {
+  const user = await createUser(req.body);
+  return SuccessResponse.created(res, user, 'User created successfully');
 };
