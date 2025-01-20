@@ -15,16 +15,19 @@ This project is a simple Express application that connects to a MongoDB database
 ## Installation
 
 1. Clone the repository:
+
    ```
-   git clone https://github.com/yourusername/express-mongodb-app.git
+   git clone https://github.com/nguyentoan02/Project_SD302_GR04.git
    ```
 
 2. Navigate to the project directory:
+
    ```
-   cd express-mongodb-app
+   cd Project_SD302_GR04
    ```
 
 3. Install the dependencies:
+
    ```
    npm install
    ```
@@ -34,6 +37,7 @@ This project is a simple Express application that connects to a MongoDB database
 ## Usage
 
 To start the application, run:
+
 ```
 npm start
 ```
