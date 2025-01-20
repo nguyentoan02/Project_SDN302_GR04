@@ -6,29 +6,29 @@ const HTTP_STATUS = {
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   CONFLICT: 409,
-  INTERNAL_SERVER: 500,
+  INTERNAL_SERVER: 500
 };
 
 const USER_ROLES = {
-  ADMIN: "admin",
-  USER: "user",
-  GUEST: "guest",
+  ADMIN: 'admin',
+  USER: 'user',
+  GUEST: 'guest'
 };
 
 const AUTH = {
-  JWT_SECRET: process.env.JWT_SECRET || "your-secret-key",
-  JWT_EXPIRES_IN: "24h",
+  JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
+  JWT_EXPIRES_IN: '24h',
   SALT_ROUNDS: 10,
-  TOKEN_TYPE: "Bearer",
+  TOKEN_TYPE: 'Bearer'
 };
 
 const MESSAGES = {
-  SUCCESS: "Success",
-  ERROR: "Error occurred",
-  NOT_FOUND: "Resource not found",
-  UNAUTHORIZED: "Unauthorized access",
-  INVALID_CREDENTIALS: "Invalid credentials",
-  VALIDATION_ERROR: "Validation error",
+  SUCCESS: 'Success',
+  ERROR: 'Error occurred',
+  NOT_FOUND: 'Resource not found',
+  UNAUTHORIZED: 'Unauthorized access',
+  INVALID_CREDENTIALS: 'Invalid credentials',
+  VALIDATION_ERROR: 'Validation error'
 };
 
 const VALIDATION = {
@@ -36,20 +36,22 @@ const VALIDATION = {
   MAX_PASSWORD_LENGTH: 30,
   MIN_USERNAME_LENGTH: 3,
   MAX_USERNAME_LENGTH: 20,
-  MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
+  MAX_FILE_SIZE: 5 * 1024 * 1024 // 5MB
 };
 
 const UPLOAD = {
-  ALLOWED_FORMATS: ["image/jpeg", "image/png", "image/gif"],
+  ALLOWED_FORMATS: ['image/jpeg', 'image/png', 'image/gif'],
   MAX_FILES: 5,
-  UPLOAD_DIR: "uploads/",
+  UPLOAD_DIR: 'uploads/'
 };
 
 const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_LIMIT: 10,
-  MAX_LIMIT: 100,
+  MAX_LIMIT: 100
 };
+
+const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
 
 module.exports = {
   HTTP_STATUS,
@@ -59,4 +61,5 @@ module.exports = {
   VALIDATION,
   UPLOAD,
   PAGINATION,
+  METHODS
 };
