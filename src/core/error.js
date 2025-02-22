@@ -5,6 +5,8 @@ class AppError extends Error {
 
 
     super(message); //// asdasdasd
+    this.cause ="messs"
+    this.stack ="aaa"
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
     this.isOperational = true;
