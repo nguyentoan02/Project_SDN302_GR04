@@ -1,27 +1,21 @@
+// models/User.js
 const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+const UserSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String,
+  role: { type: String, enum: ['shopper', 'admin'], default: 'shopper' },
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  purchaseHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
 });
+module.exports = mongoose.model('User', UserSchema);
 
-const User = mongoose.model('User', userSchema);
 
-module.exports = {
-  User
-};
+
+
+
+
+
+
+
