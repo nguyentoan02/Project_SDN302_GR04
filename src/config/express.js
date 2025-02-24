@@ -21,7 +21,7 @@ app.use(morgan('dev'));
 app.use(successHandler);
 
 // Routes
-app.use('/', router);
+app.use('/api', router);
 
 // Error handling
 app.use((req, res, next) => {
