@@ -6,7 +6,7 @@ const globalAsyncHandler = require('../middleware/handler');
 // Apply global async handler to router
 globalAsyncHandler(router);
 
-router.get('/api/users', userController.getUsers);
-router.post('/api/users/create', userController.createUser);
+router.get('/users', userController.getUsers);
+router.post('/users/create', userController.createUser);
 
 module.exports = router;
