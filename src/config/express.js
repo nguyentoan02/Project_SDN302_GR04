@@ -6,7 +6,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const { successHandler } = require('../core/success');
 const { handleError } = require('../core/error');
-const router = require('../routes/api');
+const router = require('../routes');
 const app = express();
 
 // Middleware
