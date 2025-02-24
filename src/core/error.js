@@ -48,6 +48,12 @@ class DatabaseError extends AppError {
     this.name = 'DatabaseError';
   }
 }
+class BadRequest extends AppError {
+  constructor(message = 'Bad Request') {
+    super(message, 400);
+    this.name = 'BadRequest';
+  }
+}
 
 const handleError = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
@@ -75,5 +81,6 @@ module.exports = {
   AuthorizationError,
   NotFoundError,
   DatabaseError,
+  BadRequest,
   handleError
 };
