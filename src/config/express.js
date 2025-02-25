@@ -6,11 +6,15 @@ const helmet = require('helmet');
 const compression = require('compression');
 const { successHandler } = require('../core/success');
 const { handleError } = require('../core/error');
+const bodyParser = require('body-parser');
 const router = require('../routes');
+
 const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
@@ -24,11 +28,6 @@ app.use(successHandler);
 app.use('/api', router);
 
 // Error handling
-app.use((req, res, next) => {
-  const error = new Error('Not Found');
-  error.status = 404;
-  next(error);
-});
 
 app.use(handleError);
 
