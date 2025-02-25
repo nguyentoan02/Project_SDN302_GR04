@@ -27,8 +27,14 @@ app.use(successHandler);
 // Routes
 app.use('/api', router);
 
-// Error handling
+// 404 Handler
+app.all('*', (req, res, next) => {
+  const err = new Error(`Cannot find ${req.originalUrl} on this server!`);
+  err.status = 404;
+  next(err);
+});
 
+// Error handling
 app.use(handleError);
 
 module.exports = app;
