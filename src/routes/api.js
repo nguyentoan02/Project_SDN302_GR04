@@ -6,10 +6,9 @@ const { getRoutes } = require('./register.routes');
 //import router
 require('./cart/cart.routes');
 require('./order/order.routes');
+
 // Apply global async handler to router
 globalAsyncHandler(router);
-
-// router.use('/cart', routerCart);
 
 // Register all routes from the registry
 getRoutes()?.forEach(({ path, router: moduleRouter }) => {
