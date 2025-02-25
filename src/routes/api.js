@@ -1,12 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/user.controller');
 const globalAsyncHandler = require('../middleware/handler');
+const { getRoutes } = require('./register.routes');
 
 // Apply global async handler to router
 globalAsyncHandler(router);
 
-router.get('/api/users', userController.getUsers);
-router.post('/api/users/create', userController.createUser);
+// Register all routes from the registry
+getRoutes().forEach(({ path, router: moduleRouter }) => {
+  if (!path || typeof path !== 'string') {
+    throw new Error(`Invalid route path: ${path}`);
+  }
+
+  if (!moduleRouter || !moduleRouter.stack) {
+    throw new Error(`Invalid router for path: ${path}`);
+  }
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+  router.use(normalizedPath, moduleRouter);
+});
 
 module.exports = router;

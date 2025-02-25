@@ -51,7 +51,7 @@ const PAGINATION = {
   MAX_LIMIT: 100
 };
 
-const METHODS = ['get', 'post', 'put', 'delete', 'patch'];
+const METHODS = ['get', 'post', 'put', 'delete', 'patch', 'use'];
 
 module.exports = {
   HTTP_STATUS,
