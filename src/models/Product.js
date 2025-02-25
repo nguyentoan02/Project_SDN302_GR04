@@ -1,11 +1,46 @@
-// models/Product.js
-const ProductSchema = new mongoose.Schema({
-    name: String,
-    description: String,
-    price: Number,
-    stock: Number,
-    category: String,
-    image: String, // URL của ảnh sản phẩm
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
-  });
-  module.exports = mongoose.model('Product', ProductSchema);
+const mongoose = require('mongoose');
+
+const ProductSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Product name is required'],
+      trim: true
+    },
+    description: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    price: {
+      type: Number,
+      required: [true, 'Price is required'],
+      min: [0, 'Price cannot be negative']
+    },
+    stock: {
+      type: Number,
+      required: [true, 'Stock quantity is required'],
+      min: [0, 'Stock cannot be negative'],
+      default: 0
+    },
+    category: {
+      type: String,
+      default: 'uncategorized'
+    },
+    image: {
+      type: String,
+      default: ''
+    },
+    reviews: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+      }
+    ]
+  },
+  {
+    timestamps: true
+  }
+);
+
+module.exports = mongoose.model('Product', ProductSchema);
