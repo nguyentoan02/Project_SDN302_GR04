@@ -1,11 +1,11 @@
 const User = require('../models/user');
-const SuccessResponse = require('../core/success');
+const { SuccessResponse } = require('../core/success');
 const { NotFoundError, DatabaseError, BadRequest } = require('../core/error');
 
 class CartController {
   async getCart(req, res) {
     if (!req?.user?._id) {
-      throw new NotFoundError('Missing param!');
+      throw new BadRequest('Missing Param');
     }
     const carts = await User.findById(req.user._id).select('cart').populate('cart.product');
     return SuccessResponse.ok(res, carts, 'OK!');
