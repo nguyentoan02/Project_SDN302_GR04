@@ -5,7 +5,7 @@ const { getRoutes } = require('./register.routes');
 
 //import router
 require('./cart/cart.routes');
-
+require('./order/order.routes');
 // Apply global async handler to router
 globalAsyncHandler(router);
 
