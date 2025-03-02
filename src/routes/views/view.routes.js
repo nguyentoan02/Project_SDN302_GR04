@@ -3,7 +3,7 @@ const router = express.Router();
 const globalAsyncHandler = require('../../middleware/handler');
 const axios = require('../../config/axios');
 
-// globalAsyncHandler(router);
+globalAsyncHandler(router);
 
 router.get('/cart', async (req, res) => {
   const { data } = await axios.get('/cart/products');
@@ -12,6 +12,24 @@ router.get('/cart', async (req, res) => {
     title: 'Cart',
     user: req.user,
     carts: data.cart || []
+  });
+});
+
+router.get('/orders/history', async (req, res) => {
+  const { data } = await axios.get('/orders/all');
+  console.log(data);
+  res.render('pages/order/orderHistory', {
+    title: 'Order History',
+    user: req.user,
+    orders: data || []
+  });
+});
+
+router.get('/orders/success', async (req, res) => {
+  res.render('pages/order/orderSuccess', {
+    title: 'Order Response',
+    user: req.user,
+    orders: data || []
   });
 });
 
