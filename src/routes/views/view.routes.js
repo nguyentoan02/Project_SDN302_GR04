@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const globalAsyncHandler = require('../../middleware/handler');
+const axios = require('../../config/axios');
 
-globalAsyncHandler(router);
+// globalAsyncHandler(router);
 
-router.get('/', (req, res) => {
-  res.render('pages/home', {
-    title: 'Home',
+router.get('/cart', async (req, res) => {
+  const { data } = await axios.get('/cart/products');
+  // console.log({ carts: data.cart });
+  res.render('pages/cart/cart', {
+    title: 'Cart',
     user: req.user,
-    data: {
-      products: []
-    }
+    carts: data.cart || []
   });
 });
 
