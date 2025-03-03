@@ -10,6 +10,9 @@ const {
   deleteProduct
 } = require("../controllers/product.controller");
 const { registerRoute } = require("./register.routes");
+const globalAsyncHandler = require("../middleware/handler");
+
+globalAsyncHandler(router);
 
 router.get("/", getAllProducts);
 router.get("/:id", getProductById);

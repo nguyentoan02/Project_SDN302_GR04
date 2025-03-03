@@ -6,6 +6,6 @@ const { registerRoute } = require("./register.routes");
 router.get('/', getUsers); // Lấy danh sách user
 router.post('/create', createUser); // Tạo user mới
 
-registerRoute('/users', userRoutes);
+registerRoute('/users', router);
 
 module.exports = router;
