@@ -9,6 +9,7 @@ const {
   updateProduct,
   deleteProduct
 } = require("../controllers/product.controller");
+const { registerRoute } = require("./register.routes");
 
 router.get("/", getAllProducts);
 router.get("/:id", getProductById);
@@ -17,5 +18,7 @@ router.get("/:id", getProductById);
 router.post("/", upload.single("image"), createProduct);
 router.put("/:id", authMiddleware, checkUserRole("admin"), upload.single("image"), updateProduct);
 router.delete("/:id", authMiddleware, checkUserRole("admin"), deleteProduct);
+
+registerRoute("/products",router);
 
 module.exports = router;

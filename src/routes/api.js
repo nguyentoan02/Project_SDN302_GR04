@@ -6,8 +6,11 @@ const { getRoutes } = require('./register.routes');
 //import router
 require('./cart/cart.routes');
 require('./order/order.routes');
-const userRoutes = require("./user.routes");
-const productRoutes = require("./product.routes");
+require('./book.routes');
+require('./favorites.routes');
+require("./user.routes");
+require("./product.routes");
+
 // Apply global async handler to router
 globalAsyncHandler(router);
 
@@ -27,6 +30,4 @@ getRoutes()?.forEach(({ path, router: moduleRouter }) => {
   router.use(normalizedPath, moduleRouter);
 });
 
-router.use('/users', userRoutes);
-router.use("/products", productRoutes);
 module.exports = router;
