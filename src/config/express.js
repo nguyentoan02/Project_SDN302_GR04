@@ -35,6 +35,11 @@ app.use(
   })
 );
 
+// View engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../views'));
+// Serve static files
+app.use(express.static(path.join(__dirname, '../public')));
 // Middleware
 app.use(express.json());
 app.use(bodyParser.json());

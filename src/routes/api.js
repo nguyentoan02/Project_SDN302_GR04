@@ -13,7 +13,7 @@ require('./favorites.routes');
 globalAsyncHandler(router);
 
 // Register all routes from the registry
-getRoutes().forEach(({ path, router: moduleRouter }) => {
+getRoutes()?.forEach(({ path, router: moduleRouter }) => {
   if (!path || typeof path !== 'string') {
     throw new Error(`Invalid route path: ${path}`);
   }
@@ -23,6 +23,7 @@ getRoutes().forEach(({ path, router: moduleRouter }) => {
   }
 
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  console.log(normalizedPath, '\n');
 
   router.use(normalizedPath, moduleRouter);
 });

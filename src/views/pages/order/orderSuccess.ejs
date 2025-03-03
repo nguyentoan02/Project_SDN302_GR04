@@ -1,0 +1,116 @@
+.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Successful</title>
+    <style>
+      .success-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 30px;
+        text-align: center;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        background: #48bb78;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .success-icon svg {
+        width: 40px;
+        height: 40px;
+        color: white;
+      }
+
+      .order-details {
+        margin: 30px 0;
+        padding: 20px;
+        background: #f7fafc;
+        border-radius: 8px;
+        text-align: left;
+      }
+
+      .order-id {
+        color: #2d3748;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+      }
+
+      .action-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .button {
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s;
+      }
+
+      .primary {
+        background: #4299e1;
+        color: white;
+      }
+
+      .secondary {
+        background: #edf2f7;
+        color: #2d3748;
+      }
+
+      .button:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-container">
+      <div class="success-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+      </div>
+
+      <h1>Order Successful!</h1>
+      <p>Thank you for your purchase. Your order has been received and is being processed.</p>
+
+      <!-- <div class="order-details">
+            <p class="order-id">Order ID: <%= order._id %></p>
+            <p>Total Amount: €<%= order.totalAmount.toFixed(2) %></p>
+            <p>Payment Method: <%= order.paymentMethod %></p>
+            <p>Order Date: <%= new Date(order.orderDate).toLocaleString() %></p>
+        </div> -->
+
+      <p>A confirmation email has been sent to your registered email address.</p>
+
+      <div class="action-buttons">
+        <a href="/orders/history" class="button primary">View Orders</a>
+        <a href="/books" class="button secondary">Continue Shopping</a>
+      </div>
+    </div>
+  </body>
+</html>
