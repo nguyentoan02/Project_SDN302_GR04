@@ -22,7 +22,7 @@ const asyncHandler = (fn) => {
 
       // Handle Promises and async functions
       if (result && typeof result.catch === 'function') {
-        result.catch((error) => handleError(error));
+        result.catch((error) => handleError(error, next));
       }
 
       // Handle EventEmitters and Streams
@@ -40,11 +40,11 @@ const globalAsyncHandler = (router) => {
     const original = router[method].bind(router);
 
     router[method] = function (path, ...handlers) {
-      console.log({
-        method,
-        path,
-        handlers
-      });
+      // console.log({
+      //   method,
+      //   path,
+      //   handlers
+      // });
 
       // Handle middleware mounting (use case)
       if (method === 'use' && typeof path === 'function') {
