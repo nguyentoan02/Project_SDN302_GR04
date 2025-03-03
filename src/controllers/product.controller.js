@@ -49,20 +49,57 @@ exports.getProductById = async (req, res) => {
 // Thêm sản phẩm
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const {
+      name,
+      code,
+      author,
+      category,
+      price,
+      stock,
+      publisher,
+      publishYear,
+      pages,
+      dimensions,
+      country
+    } = req.body;
 
-    // Validate required fields
-    if (!name || !price || !stock || !category) {
-      return res.status(400).json({ 
+    // Validate required fields based on Product schema
+    if (
+      !name ||
+      !code ||
+      !author ||
+      !category ||
+      !price ||
+      !stock ||
+      !publisher ||
+      !publishYear ||
+      !pages ||
+      !dimensions ||
+      !country
+    ) {
+      return res.status(400).json({
         status: 'error',
-        message: 'Missing required fields' 
+        message: 'Missing required fields',
+        required: [
+          'name',
+          'code',
+          'author',
+          'category',
+          'price',
+          'stock',
+          'publisher',
+          'publishYear',
+          'pages',
+          'dimensions',
+          'country'
+        ]
       });
     }
 
     if (!req.file) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         status: 'error',
-        message: 'Vui lòng tải ảnh lên' 
+        message: 'Vui lòng tải ảnh lên'
       });
     }
 
@@ -72,25 +109,34 @@ exports.createProduct = async (req, res) => {
         .upload_stream({ folder: 'products' }, async (error, result) => {
           if (error) {
             return res.status(500).json({
-              status: 'error', 
+              status: 'error',
               message: 'Error uploading image'
             });
           }
 
           try {
             const product = new Product({
-             ...req.body,
+              name,
+              code,
+author,
+              category,
+              price,
+              stock,
+              publisher,
+              publishYear,
+              pages,
+              dimensions,
+              country,
               image: result.secure_url
             });
 
             const productRs = await product.save();
-            
+
             return res.status(200).json({
               status: 'success',
               message: 'Sản phẩm đã được tạo!',
               data: productRs
             });
-
           } catch (err) {
             return res.status(500).json({
               status: 'error',
@@ -100,10 +146,9 @@ exports.createProduct = async (req, res) => {
         })
         .end(req.file.buffer);
     });
-
   } catch (error) {
     return res.status(500).json({
-      status: 'error', 
+      status: 'error',
       message: error.message
     });
   }
@@ -112,42 +157,81 @@ exports.createProduct = async (req, res) => {
 // Cập nhật sản phẩm
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const {
+      name,
+      code,
+      author,
+      category,
+      price,
+      stock,
+      publisher,
+      publishYear,
+      pages,
+      dimensions,
+      country,
+      description
+    } = req.body;
+
     const product = await Product.findById(req.params.id);
-    if (!product) return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
-
-    // Nếu có ảnh mới -> upload lên Cloudinary
-    if (req.file) {
-      const uploadResponse = await cloudinary.uploader.upload_stream(
-        { folder: 'products' },
-        async (error, result) => {
-          if (error) return res.status(500).json({ message: 'Lỗi upload ảnh', error });
-
-          product.image = result.secure_url;
-          product.name = name || product.name;
-          product.description = description || product.description;
-          product.price = price || product.price;
-          product.stock = stock || product.stock;
-          product.category = category || product.category;
-
-          await product.save();
-          res.status(200).json({ message: 'Sản phẩm đã được cập nhật', product });
-        }
-      );
-
-      req.file.stream.pipe(uploadResponse);
-    } else {
-      product.name = name || product.name;
-      product.description = description || product.description;
-      product.price = price || product.price;
-      product.stock = stock || product.stock;
-      product.category = category || product.category;
-
-      await product.save();
-      res.status(200).json({ message: 'Sản phẩm đã được cập nhật', product });
+    if (!product) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Sản phẩm không tồn tại'
+      });
     }
+
+    // Update fields if provided
+    if (name) product.name = name;
+    if (code) product.code = code;
+    if (author) product.author = author;
+    if (category) product.category = category;
+    if (price) product.price = price;
+    if (stock) product.stock = stock;
+    if (publisher) product.publisher = publisher;
+    if (publishYear) product.publishYear = publishYear;
+    if (pages) product.pages = pages;
+    if (dimensions) product.dimensions = dimensions;
+    if (country) product.country = country;
+    if (description) product.description = description;
+
+    // Handle image upload if new image is provided
+    if (req.file) {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'products' },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          uploadStream.end(req.file.buffer);
+        });
+
+        product.image = result.secure_url;
+      } catch (uploadError) {
+        return res.status(500).json({
+          status: 'error',
+          message: 'Lỗi upload ảnh',
+          error: uploadError.message
+        });
+      }
+    }
+
+    // Save updated product
+    const updatedProduct = await product.save();
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Sản phẩm đã được cập nhật',
+      data: updatedProduct
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error });
+    return res.status(500).json({
+      status: 'error',
+      message: 'Lỗi server',
+      error: error.message
+    });
   }
 };
 
