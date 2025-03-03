@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const globalAsyncHandler = require('../middleware/handler');
-const { getRoutes } = require('./register.routes');
+const getRoutes = require('./register.routes').getRoutes;
 
 //import router
 require('./cart/cart.routes');
