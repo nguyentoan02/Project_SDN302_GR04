@@ -19,7 +19,7 @@ router.get("/:id", getProductById);
 
 // Chỉ admin mới có thể thêm, cập nhật, xóa sản phẩm
 router.post("/", upload.single("image"), createProduct);
-router.put("/:id",  upload.single("image"), updateProduct);
+router.put("/:id", authMiddleware, checkUserRole("admin"), upload.single("image"), updateProduct);
 router.delete("/:id", authMiddleware, checkUserRole("admin"), deleteProduct);
 
 registerRoute("/products",router);
