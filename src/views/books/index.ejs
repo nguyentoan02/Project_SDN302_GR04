@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Danh sách sách</title>
+    <style>
+      .controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; /* Tạo khoảng cách đều giữa ô tìm kiếm và nút */
+  margin-bottom: 20px;
+}
+
+.btnHeader {
+  display: flex;
+  gap: 12px; /* Khoảng cách giữa hai nút */
+  margin-bottom: 15px;
+}
+
+.btn-custom {
+  padding: 12px 20px;
+  border: none;
+  text-decoration: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+  display: inline-block;
+  text-align: center;
+}
+
+.favorites-btn {
+  background-color: #564b48 !important;
+  color: white !important;
+}
+
+.favorites-btn:hover {
+  background-color: #7a6761 !important;
+}
+
+.filter-btn {
+  background-color: #6a5151 !important;
+  color: white !important;
+}
+
+.filter-btn:hover {
+  background-color: #5d7a72 !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-box {
+  flex-grow: 1;
+  max-width: 500px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 12px 15px; /* Điều chỉnh padding để trông đều hơn */
+  border-radius: 25px; /* Bo tròn đẹp hơn */
+  border: 1px solid #ccc;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <!-- Phần điều khiển -->
+      <div class="controls">
+        <div class="search-box">
+          <%- include('./filter', { books, name }) %>
+        </div>
+        <div class="btnHeader">
+          <a href="/api/favorites" class="btn-custom favorites-btn">♥ Favorites</a>
+        <a href="/api/books/filterAll" class="btn-custom filter-btn">☰ Filters</a>
+        </div>
+      </div>
+      
+      <!-- Vùng hiển thị danh sách sách -->
+      <div id="book-list"><%- include('./list') %></div>
+    </div>
+  </body>
+</html>
