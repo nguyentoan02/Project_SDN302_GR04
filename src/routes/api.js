@@ -8,6 +8,8 @@ require('./cart/cart.routes');
 require('./order/order.routes');
 require('./book.routes');
 require('./favorites.routes');
+require("./user.routes");
+require("./product.routes");
 
 // Apply global async handler to router
 globalAsyncHandler(router);
