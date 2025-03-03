@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const globalAsyncHandler = require('../middleware/handler');
-const { getRoutes } = require('./register.routes');
+const getRoutes = require('./register.routes').getRoutes;
 
 //import router
 require('./cart/cart.routes');
 require('./order/order.routes');
+require('./book.routes');
+require('./favorites.routes');
+require("./user.routes");
+require("./product.routes");
 
 // Apply global async handler to router
 globalAsyncHandler(router);

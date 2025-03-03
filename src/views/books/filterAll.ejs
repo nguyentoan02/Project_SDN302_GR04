@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lọc Sách</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        gap: 30px;
+      }
+
+      /* Form lọc sách (bên trái) */
+      .filter-form {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        width: 30%; /* Chiếm 30% chiều rộng */
+        min-width: 250px; /* Đảm bảo không quá hẹp */
+      }
+
+      .filter-form h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .filter-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .filter-form div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .filter-form label {
+        font-weight: 500;
+        color: #444;
+      }
+
+      .filter-form select {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: #fff;
+        transition: border-color 0.3s ease;
+      }
+
+      .filter-form select:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+      }
+
+      .filter-form .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        background-color: #e74c3c;
+        color: #fff;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .filter-form .btn:hover {
+        background-color: #c0392b;
+      }
+
+      /* Kết quả sách (bên phải) */
+      .content {
+        width: 70%; /* Chiếm 70% chiều rộng */
+        flex: 1;
+      }
+
+      .content h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      #book-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 3 sách mỗi hàng */
+        gap: 20px;
+        list-style: none;
+        padding: 0;
+      }
+
+      .book-item {
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .book-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-item img {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .book-item a {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+      }
+
+      .book-item h3 {
+        color: #252525;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: 'Arial', sans-serif;
+        max-width: 150px; /* Giới hạn chiều rộng bằng chiều rộng của ảnh */
+      }
+
+      .book-item .price {
+        font-size: 1rem;
+        color: #498374;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-family: 'Arial', sans-serif;
+      }
+
+      .book-item .stock {
+        font-size: 0.9rem;
+        color: #f7941d;
+        font-weight: 600;
+      }
+
+      .book-item .stock.out-of-stock {
+        color: #dc3545;
+      }
+
+      /* Thông báo không có sách */
+      #book-list p {
+        grid-column: span 3;
+        text-align: center;
+        color: #e74c3c;
+        font-size: 16px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Nút quay về */
+      .btn-secondary {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: #fff;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background-color: #2980b9;
+      }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        #book-list {
+          grid-template-columns: repeat(3, 1fr); /* Vẫn giữ 3 sách mỗi hàng */
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
+          flex-direction: column;
+        }
+
+        .filter-form,
+        .content {
+          width: 100%;
+        }
+
+        #book-list {
+          grid-template-columns: repeat(2, 1fr); /* 2 sách mỗi hàng trên màn hình nhỏ */
+        }
+
+        .filter-form {
+          padding: 15px;
+          margin-bottom: 20px;
+        }
+
+        .book-item img {
+          max-width: 120px;
+        }
+
+        .book-item h3 {
+          max-width: 120px; /* Điều chỉnh theo hình ảnh trên màn hình nhỏ */
+        }
+      }
+
+      @media (max-width: 480px) {
+        #book-list {
+          grid-template-columns: 1fr; /* 1 sách mỗi hàng trên màn hình rất nhỏ */
+        }
+
+        .book-item img {
+          max-width: 100px;
+        }
+
+        .book-item h3 {
+          max-width: 100px; /* Điều chỉnh theo hình ảnh trên màn hình rất nhỏ */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="filter-form">
+        <h2>Lọc Sách</h2>
+        <form action="/api/books/filterAll" method="GET" id="filterForm">
+          <div>
+            <label for="author">Tác giả:</label>
+            <select name="author" id="author">
+              <option value="">Tất cả</option>
+              <% const authors = [...new Set(books.map(book => book.author))]; %>
+              <% authors.forEach(author => { %>
+                <option value="<%= author %>" <%= filters.author === author ? 'selected' : '' %>><%= author %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div>
+            <label for="category">Thể loại:</label>
+            <select name="category" id="category">
+              <option value="">Tất cả</option>
+              <% const categories = [...new Set(books.map(book => book.category))]; %>
+              <% categories.forEach(category => { %>
+                <option value="<%= category %>" <%= filters.category === category ? 'selected' : '' %>><%= category %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div>
+            <label for="country">Quốc gia:</label>
+            <select name="country" id="country">
+              <option value="">Tất cả</option>
+              <% const countries = [...new Set(books.map(book => book.country))]; %>
+              <% countries.forEach(country => { %>
+                <option value="<%= country %>" <%= filters.country === country ? 'selected' : '' %>><%= country %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div>
+            <label for="priceRange">Khoảng giá (VNĐ):</label>
+            <select name="priceRange" id="priceRange">
+              <option value="" <%= !filters.priceRange ? 'selected' : '' %>>Tất cả</option>
+              <option value="0-50000" <%= filters.priceRange === '0-50000' ? 'selected' : '' %>>Nhỏ hơn 50.000</option>
+              <option value="0-100000" <%= filters.priceRange === '0-100000' ? 'selected' : '' %>>Nhỏ hơn 100.000</option>
+              <option value="100000-200000" <%= filters.priceRange === '100000-200000' ? 'selected' : '' %>>Từ 100.000 - 200.000</option>
+              <option value="200000-400000" <%= filters.priceRange === '200000-400000' ? 'selected' : '' %>>Từ 200.000 - 400.000</option>
+              <option value="500000-" <%= filters.priceRange === '500000-' ? 'selected' : '' %>>Trên 500.000</option>
+            </select>
+          </div>
+        </form>
+        <a href="/api/books" class="btn">Quay về trang chủ</a>
+      </div>
+
+      <div class="content">
+        <h2>Kết quả lọc</h2>
+        <div id="book-list">
+          <% if (books.length > 0) { %>
+            <% books.forEach(book => { %>
+              <div class="book-item">
+                <a href="/api/books/<%= book.slug %>">
+                    <img src="<%= book.image %>" alt="<%= book.name %>" />
+                  </a>
+                  <a href="/api/books/<%= book.slug %>">
+                    <h3 class="book-title"><%= book.name %></h3>
+                  </a>
+                <div class="price"><%= book.price.toLocaleString() %> VNĐ</div>
+                <div class="stock <%= book.stock === 0 ? 'out-of-stock' : '' %>">
+                  <%= book.stock === 0 ? 'Out of stock' : 'In stock' %>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p>Không có sách nào phù hợp với tiêu chí lọc.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thêm script xử lý sự kiện -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('filterForm');
+        
+        const selects = form.querySelectorAll('select');
+        selects.forEach(select => {
+          select.addEventListener('change', function() {
+            form.submit();
+          });
+        });
+
+        // JavaScript để cắt tên sách thành 5 từ và thêm dấu "...."
+        const bookTitles = document.querySelectorAll('.book-title');
+        bookTitles.forEach(title => {
+          const fullText = title.textContent.trim();
+          const words = fullText.split(' ');
+          
+          if (words.length > 5) {
+            const truncatedText = words.slice(0, 5).join(' ') + ' ....';
+            title.textContent = truncatedText;
+          } else {
+            // Đảm bảo vẫn áp dụng CSS ellipsis nếu cần
+            title.textContent = fullText;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -310,7 +310,7 @@
                 });
                 
                 if (response.ok) {
-                    window.location.href = '/orders';
+                    window.location.href = '/orders/history';
                 } else {
                     const error = await response.json();
                     alert(error.message || 'Failed to create order');

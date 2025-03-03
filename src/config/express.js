@@ -9,8 +9,32 @@ const { successHandler } = require('../core/success');
 const { handleError } = require('../core/error');
 const bodyParser = require('body-parser');
 const router = require('../routes');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 const app = express();
+// View engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../views'));
+// Serve static files
+app.use(express.static(path.join(__dirname, '../public')));
+
+app.use(
+  session({
+    secret: 'your-secure-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.DATABASE_URL,
+      ttl: 24 * 60 * 60
+    }),
+    cookie: {
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  })
+);
+
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));

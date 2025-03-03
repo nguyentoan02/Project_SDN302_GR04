@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm sách</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e6f3ff; /* Light blue background to match the image */
+            font-family: Arial, sans-serif;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            border-radius: 50px;
+            padding: 10px;
+            width: 100%;
+            max-width: 700px;
+            background: linear-gradient(to right, blue, purple, red); /* Gradient to match the image */
+        }
+        
+        .search-container input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px;
+            border-radius: 50px;
+            background: transparent;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .search-container button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 28px;
+            color: white;
+        }
+
+        /* Book List */
+        .book-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            max-width: 700px; /* Slightly wider to match the image */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .book-item {
+            display: flex;
+            align-items: center;
+            padding: 10px; /* Reduced padding for closer alignment */
+            border-radius: 8px; /* Rounded corners for a modern look */     
+            margin-bottom: 10px; /* Reduced margin for closer items */
+            gap: 10px; /* Reduced gap between image and text */
+        }
+        
+        .book-item img {
+            width: 60px; /* Smaller image size to match the image */
+            height: 80px; /* Maintain aspect ratio */
+            object-fit: cover;
+            border-radius: 4px; /* Slight rounding on image */
+        }
+        
+        .book-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px; /* Very small gap between name and author for closeness */
+        }
+        
+        .book-name a{
+            font-size: 16px; /* Smaller font size for compactness */
+            font-weight: bold;
+            color: #333; /* Dark text for readability */
+            margin: 0; /* Remove default margins for tighter spacing */
+            text-decoration: none; /* Remove underline from links */
+        }
+        
+        .book-author {
+            font-size: 12px; /* Smaller font size for author */
+            color: #666; /* Gray for author text */
+            margin: 0; /* Remove default margins for tighter spacing */
+        }
+        
+        .book-price {
+            color: #ff0000; /* Red for price, matching the image */
+            font-weight: bold;
+            font-size: 16px; /* Match the image size */
+            margin: 0; /* Remove default margins for tighter spacing */
+        }
+
+        .book-stock {
+            font-size: 14px;
+            color: #8d5e2a; /* Green for "In Stock," matching the image */
+            font-weight: 400;
+
+        }
+
+        .book-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-to-cart {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px; /* Smaller font for compactness */
+        }
+        
+        .add-to-cart:hover {
+            background-color: #218838;
+        }
+        
+        .add-to-cart:disabled {
+            background-color: #6c757d; /* Gray for disabled state */
+            cursor: not-allowed;
+        }
+
+        /* No results message */
+        .no-results {
+            text-align: center;
+            color: #dc3545; /* Red for error message */
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-container {
+                padding: 8px 15px; /* Reduce padding on tablets */
+                max-width: 90%; /* Make it almost full-width on mobile */
+            }
+
+            .book-list {
+                max-width: 90%; /* Adjust width on tablets */
+            }
+
+            .book-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+                gap: 5px; /* Smaller gap on mobile */
+            }
+
+            .book-item img {
+                width: 50px;
+                height: 70px;
+            }
+
+            .book-name {
+                font-size: 14px;
+            }
+
+            .book-author, .book-price, .book-stock {
+                font-size: 10px;
+            }
+
+            .add-to-cart {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .book-item img {
+                width: 40px;
+                height: 60px;
+            }
+
+            .book-name {
+                font-size: 12px;
+            }
+
+            .book-author, .book-price, .book-stock {
+                font-size: 10px;
+            }
+
+            .add-to-cart {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+        }
+    </style>
+</head>
+<body class="container mt-5">
+    <form action="/api/books/filter" method="GET" class="d-flex justify-content-center">
+        <div class="search-container">
+            <input type="text" id="name" name="name" placeholder="Nhập tên sách để tìm kiếm." value="<%= name || '' %>">
+            <button type="submit">🔍</button>
+        </div>
+    </form>
+
+    <% if (name && books.length > 0) { %>
+        <ul class="book-list">
+            <% books.forEach(book => { %>
+                <li class="book-item">
+                  <a href="/api/books/<%= book.slug %>">
+                    <img src="<%= book.image %>" alt="<%= book.name %>">
+                </a>
+                    <div class="book-info">
+                      <span class="book-name">
+                        <a href="/api/books/<%= book.slug %>"><%= book.name %></a>
+                      </span>
+                      <span class="book-author">Tác giả: <%= book.author %></span>
+                    </div>
+                    <span class="book-price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</span>
+                    <span class="book-stock"><%= book.stock > 0 ? 'In Stock' : 'Out of Stock' %></span>
+                    <div class="book-actions">
+                        <button class="add-to-cart" <%= book.stock === 0 ? 'disabled' : '' %>>Thêm vào giỏ</button>
+                    </div>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else if (name) { %>
+        <p class="no-results">❌ Không tìm thấy sách nào phù hợp.</p>
+    <% } else { %>
+        <p class="text-muted text-center mt-4"></p>
+    <% } %>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const form = document.querySelector("form");
+          const input = document.querySelector("#name");
+  
+          form.addEventListener("submit", function (event) {
+              if (!input.value.trim()) {
+                  event.preventDefault(); 
+                  
+                  let errorMsg = document.getElementById("error-message");
+                  if (!errorMsg) {
+                      errorMsg = document.createElement("p");
+                      errorMsg.id = "error-message";
+                      errorMsg.className = "no-results";
+                      errorMsg.textContent = "⚠️ Vui lòng nhập từ khóa để tìm kiếm!";
+                                            form.parentNode.insertBefore(errorMsg, form.nextSibling);
+                  }
+              }
+          });
+  
+          input.addEventListener("input", function () {
+              const errorMsg = document.getElementById("error-message");
+              if (errorMsg) {
+                  errorMsg.remove();
+              }
+          });
+      });
+  </script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

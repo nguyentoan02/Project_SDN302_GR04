@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sách</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .book-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .book-image {
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-details {
+            padding-left: 20px;
+        }
+
+        .book-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .book-meta {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .book-meta .author {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .book-meta .category {
+            color: #777;
+        }
+
+        .rating {
+            color: #ffc107;
+            margin-bottom: 15px;
+        }
+
+        .price-box {
+            background-color: #ff8c00;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .book-info p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .quantity-input {
+            max-width: 100px;
+        }
+
+        .stock-info {
+            color: #666;
+            margin-left: 10px;
+        }
+        
+        .w-100 {
+          width: 50% !important;
+        }
+
+        .btn-success, .btn-primary, .btn-secondary {
+            width: 20%;
+            margin-top: 10px;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+        }
+
+        .btn-success {
+            background-color: #43c953;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #cc0000;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .nav-tabs {
+            border-bottom: none;
+            background-color: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs .nav-link {
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            color: #666;
+            padding: 15px 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-right: 5px;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .tab-content {
+            background-color: #fff;
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
+        }
+
+        .tab-content p {
+            color: #777;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        #stock-warning {
+            display: none;
+            margin-top: 5px;
+        }
+
+        .review-tab {
+            color: #777;
+        }
+
+        .review-tab:empty::after {
+            content: "Chưa có đánh giá nào cho sách này.";
+            color: #777;
+            font-style: italic;
+        }
+
+        /* Phần "Có thể bạn yêu thích" */
+        .related-books {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .related-books h3 {
+            color: #00cc99;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .related-book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .related-book-item {
+            text-align: center;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .related-book-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .related-book-item img {
+            width: 100%;
+            max-width: 150px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .related-book-title a {
+            font-size: 1rem;
+            color: #252525;
+            margin-bottom: 5px;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-decoration: none !important; 
+            font-family: 'Product Sans', sans-serif; 
+        }
+
+        .related-book-price {
+            font-size: 1rem;
+            color: #498374 ;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-family: 'Product Sans', sans-serif;
+        }
+
+        .related-book-stock {
+            font-size: 0.9rem;
+            color: #f7941d ; 
+            font-weight: 600;
+        }
+
+        .related-book-stock.out-of-stock {
+            color: #dc3545; 
+        }
+
+        /* Responsive cho related books */
+        @media (max-width: 768px) {
+            .related-book-list {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .related-book-item img {
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .related-book-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Nút quay lại danh sách được đặt lên đầu -->
+        <div class="mb-4">
+            <a href="/api/books" class="btn btn-secondary">⬅ Quay lại danh sách</a>
+        </div>
+
+        <div class="row book-card">
+            <div class="col-md-4">
+                <img src="<%= book.image %>" alt="<%= book.name %>" class="img-fluid book-image" />
+            </div>
+
+            <div class="col-md-8 book-details">
+                <h1 class="book-title"><%= book.name %></h1>
+                <div class="book-meta">
+                    <span class="author">Tác giả: <%= book.author %></span> | 
+                    <span class="category">Thể loại: <%= book.category %></span>
+                </div>
+                <div class="rating">★★★★☆ <span class="text-muted">(<%= book.rating %>/5)</span></div>
+                <div class="price-box"><%= book.price.toLocaleString() %> VNĐ</div>
+                <div class="book-info">
+                    <p><strong>Mã hàng (ISBN):</strong> <%= book.code %></p>
+                    <p><strong>Nhà xuất bản:</strong> <%= book.publisher %></p>
+                    <p><strong>Năm xuất bản:</strong> <%= book.publishYear %></p>
+                    <p><strong>Quốc gia:</strong> <%= book.country %></p>
+                    <p><strong>Số trang:</strong> <%= book.pages %></p>
+                    <p><strong>Kích thước:</strong> <%= book.dimensions %></p>
+                </div>
+
+                <!-- Nhập số lượng -->
+                <div class="d-flex align-items-center mt-3">
+                    <label for="quantity" class="me-2">Số lượng:</label>
+                    <input 
+                        type="number" 
+                        id="quantity" 
+                        value="1" 
+                        min="1" 
+                        max="<%= book.stock %>" 
+                        class="form-control quantity-input"
+                        <% if (book.stock === 0) { %> disabled <% } %> 
+                    />
+                    <span class="ms-3 stock-info">Còn lại: <strong><%= book.stock %></strong></span>
+                </div>
+                <p id="stock-warning" class="text-danger fw-bold mt-2"></p>
+
+                <% if (book.stock === 0) { %>
+                  <p class="text-danger fw-bold mt-2">⚠ Sản phẩm đã hết hàng!</p>
+                  <a href="#" class="btn btn-secondary mt-3 w-100 disabled">Hết hàng</a>
+                  <a href="/api/favorites" class="btn btn-secondary mt-2 w-100">📜 Xem danh sách yêu thích</a>
+                <% } else { %>
+                    <a href="#" class="btn btn-success mt-3 w-100">🛒 Thêm vào giỏ hàng</a>
+                <% } %>
+                <a href="/api/favorites" class="btn btn-secondary mt-2 w-100">📜 Xem danh sách yêu thích</a>
+            </div>
+        </div>
+
+        <!-- Mô tả và Đánh giá -->
+        <div class="mt-4">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">📖 Mô tả</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="false">⭐ Đánh giá</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                    <p class="text-muted"><%= book.description %></p>
+                </div>
+                <div class="tab-pane fade review-tab" id="review" role="tabpanel" aria-labelledby="review-tab">
+                    <!-- Nội dung đánh giá sẽ được thêm qua EJS nếu có, hiện tại để trống -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Phần "Có thể bạn yêu thích" -->
+        <div class="related-books">
+            <h3>Có thể bạn yêu thích</h3>
+            <ul class="related-book-list">
+                <% if (typeof allBooks !== 'undefined' && allBooks.length > 0) { %>
+                    <% 
+                        const filteredBooks = allBooks.filter(relatedBook => relatedBook._id.toString() !== book._id.toString());
+                        const randomBooks = filteredBooks.sort(() => 0.5 - Math.random()).slice(0, 5);
+                    %>
+                    <% randomBooks.forEach(relatedBook => { %>
+                        <li class="related-book-item">
+                            <a href="/api/books/<%= relatedBook.slug %>">
+                                <img src="<%= relatedBook.image %>" alt="<%= relatedBook.name %>">
+                            </a>
+                            <div class="related-book-title">
+                                <a href="/api/books/<%= relatedBook.slug %>"><%= relatedBook.name %></a>
+                            </div>
+                            <div class="related-book-price"><%= relatedBook.price.toLocaleString() %> VNĐ</div>
+                            <div class="related-book-stock <%= relatedBook.stock === 0 ? 'out-of-stock' : '' %>">
+                                <%= relatedBook.stock === 0 ? 'Out of stock' : 'In stock' %>
+                            </div>
+                        </li>
+                        
+                    <% }); %>
+                <% } else { %>
+                    <p class="text-muted">Không có sách nào khác để hiển thị.</p>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const quantityInput = document.getElementById("quantity");
+            const stockWarning = document.getElementById("stock-warning");
+            const maxStock = <%= book.stock %>;
+
+            if (quantityInput) {
+                quantityInput.addEventListener("input", function () {
+                    let value = parseInt(quantityInput.value, 10);
+
+                    if (isNaN(value) || value < 1) {
+                        quantityInput.value = 1;
+                        stockWarning.textContent = "⚠ Số lượng không thể nhỏ hơn 1!";
+                        stockWarning.style.display = "block";
+                    } else if (value > maxStock) {
+                        quantityInput.value = maxStock;
+                        stockWarning.textContent = `⚠ Chỉ còn ${maxStock} sản phẩm trong kho!`;
+                        stockWarning.style.display = "block";
+                    } else {
+                        stockWarning.textContent = "";
+                        stockWarning.style.display = "none";
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
