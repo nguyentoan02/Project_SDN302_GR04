@@ -41,21 +41,29 @@ exports.filterBooks = async (req, res) => {
 // Xem chi tiết sách - Đã chỉnh sửa để thêm allBooks
 exports.bookDetail = async (req, res) => {
   try {
-    const book = await Product.findOne({ slug: req.params.slug });
+    // Fetch the book by slug and populate reviews
+    const book = await Product.findOne({ slug: req.params.slug }).populate({
+      path: 'reviews',
+      populate: { path: 'userId', select: 'username' } // Optional: Include username from User model
+    });
+
     if (!book) {
       return res.status(404).send('Không tìm thấy sách');
     }
 
-    // Lấy tất cả sách từ database (trừ sách hiện tại nếu cần)
-    const allBooks = await Product.find({ _id: { $ne: book._id } }); // Loại trừ sách hiện tại
+    // Fetch all other books (excluding the current one)
+    const allBooks = await Product.find({ _id: { $ne: book._id } });
 
-    res.render('books/detail', { book, allBooks });
+    // Extract reviews from the populated book (ensure it’s an array)
+    const reviews = book.reviews || [];
+
+    // Render the template with book, allBooks, and reviews
+    res.render('books/detail', { book, allBooks, reviews });
   } catch (error) {
     console.error('❌ Lỗi khi tải chi tiết sách:', error);
     res.status(500).send('Lỗi server');
   }
 };
-
 // Lọc sách theo các tiêu chí (tác giả, thể loại, quốc gia, giá tiền)
 exports.filterByAll = async (req, res) => {
   try {
