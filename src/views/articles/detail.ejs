@@ -1,0 +1,268 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Book Library - <%= article.title %></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/icomoon.css" />
+    <link rel="stylesheet" href="/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/css/owl.carousel.css" />
+    <link rel="stylesheet" href="/css/transitions.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/color.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <style>
+      .alert {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+  .alert {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+  }
+
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+  }
+
+  /* Thêm CSS cho ảnh avatar */
+  .tg-authorimg img {
+    width: 50px; /* Kích thước mong muốn */
+    height: 50px;
+    object-fit: cover; /* Giữ tỷ lệ ảnh */
+    border-radius: 50%; /* Làm ảnh tròn, tùy chọn */
+  }
+</style>
+
+    </style>
+  </head>
+  <body>
+    <div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+      <%- include('../partials/header') %>
+      <div
+        class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner"
+        data-z-index="-100"
+        data-appear-top-offset="600"
+        data-parallax="scroll"
+        data-image-src="/images/parallax/bgparallax-07.jpg"
+      >
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <div class="tg-innerbannercontent">
+                <h1>News & Articles</h1>
+                <ol class="tg-breadcrumb">
+                  <li><a href="/">home</a></li>
+                  <li><a href="/articles">news</a></li>
+                  <li class="tg-active"><%= article.title %></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main id="tg-main" class="tg-main tg-haslayout">
+        <div class="tg-sectionspace tg-haslayout">
+          <div class="container">
+            <div class="row">
+              <div id="tg-twocolumns" class="tg-twocolumns">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                  <figure class="tg-newsdetailimg">
+                    <img src="<%= article.image || '/images/default.jpg' %>" alt="<%= article.title %>" />
+                    <figcaption class="tg-author">
+                      <img src="/images/author/imag-26.jpg" alt="Author Avatar" />
+                      <div class="tg-authorinfo">
+                        <span class="tg-bookwriter">
+                          By: 
+                            Admin
+                          </a>
+                        </span>
+                        <ul class="tg-postmetadata">
+                          <li>
+                            <a href="javascript:void(0);">
+                              <i class="fa fa-comment-o"></i><i><%= article.comments.length %> Comments</i>
+                            </a>
+                          </li> 
+                          <li>
+                            <a href="javascript:void(0);">
+                              <i class="fa fa-eye"></i><i><%= article.views %> Views</i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </figcaption>
+                  </figure>
+                </div>
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+                  <div id="tg-content" class="tg-content">
+                    <div class="tg-newsdetail">
+                      <div class="tg-posttitle">
+                        <h3><a href="/api/article/<%= article._id %>"><%= article.title %></a></h3>
+                      </div>
+                      <div class="tg-description">
+                        <p><%- article.content %></p>
+                      </div>
+                      <div class="tg-tagsshare">
+                        <div class="tg-socialshare">
+                          <span>Share:</span>
+                          <ul class="tg-socialicons">
+                            <li class="tg-facebook">
+                              <a href="javascript:void(0);"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li class="tg-twitter">
+                              <a href="javascript:void(0);"><i class="fa fa-twitter"></i></a>
+                            </li>
+                            <li class="tg-linkedin">
+                              <a href="javascript:void(0);"><i class="fa fa-linkedin"></i></a>
+                            </li>
+                            <li class="tg-googleplus">
+                              <a href="javascript:void(0);"><i class="fa fa-google-plus"></i></a>
+                            </li>
+                            <li class="tg-rss">
+                              <a href="javascript:void(0);"><i class="fa fa-rss"></i></a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <!-- Comments Section -->
+                      <div class="tg-commentsarea">
+                        <div class="tg-sectionhead">
+                          <h2><%= article.comments.length %> Comments</h2>
+                        </div>
+                        <ul id="tg-comments" class="tg-comments">
+                          <% article.comments.forEach(comment => { %>
+                            <li>
+                              <div class="tg-authorbox">
+                                <figure class="tg-authorimg">
+                                  <img src="<%= comment.author && comment.author.avatar ? comment.author.avatar : '/images/author/imag-24.jpg' %>" alt="Comment Author" />
+                                </figure>
+                                <div class="tg-authorinfo">
+                                  <div class="tg-authorhead">
+                                    <div class="tg-leftarea">
+                                      <div class="tg-authorname">
+                                        <h2><%= comment.author && comment.author.fullname ? comment.author.fullname : 'Ẩn danh' %></h2>
+                                        <span>Commented At: <%= new Date(comment.createdAt).toLocaleDateString() %></span>
+                                      </div>
+                                    </div>
+                                    <div class="tg-rightarea">
+                                      <a class="tg-btnreply" href="javascript:void(0);">
+                                        Reply<i class="fa fa-mail-reply"></i>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="tg-description">
+                                    <p><%= comment.content %></p>
+                                  </div>
+                                </div>
+                                <div class="tg-bottomarrow"></div>
+                              </div>
+                            </li>
+                          <% }) %>
+                        </ul>
+                        <!-- Comment Form -->
+                        <div class="tg-commentform">
+                          <div class="tg-sectionhead">
+                            <h2>Leave a Comment</h2>
+                          </div>
+                          <form action="/api/articles/<%= article._id %>/comment" method="POST" class="tg-formtheme">
+                            <div class="form-group">
+                              <label for="commentContent">Your Comment</label>
+                              <textarea id="commentContent" name="content" placeholder="Write your comment here..." required rows="4" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                              <button type="submit" class="tg-btn">Submit Comment</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                  <aside id="tg-sidebar" class="tg-sidebar">
+                    <div class="tg-widget tg-widgetsearch">
+                      <form class="tg-formtheme tg-formsearch">
+                        <div class="form-group">
+                          <button type="submit"><i class="icon-magnifier"></i></button>
+                          <input type="search" name="search" class="form-control" placeholder="Search Here" />
+                        </div>
+                      </form>
+                    </div>
+                    <div class="tg-widget tg-widgettrending">
+                      <div class="tg-widgettitle">
+                        <h3>Trending Posts</h3>
+                      </div>
+                      <div class="tg-widgetcontent">
+                        <ul>
+                          <li>
+                            <article class="tg-post">
+                              <figure>
+                                <a href="javascript:void(0);"><img src="/images/products/img-04.jpg" alt="image description" /></a>
+                              </figure>
+                              <div class="tg-postcontent">
+                                <div class="tg-posttitle">
+                                  <h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+                                </div>
+                                <span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+                              </div>
+                            </article>
+                          </li>
+                          <!-- Thêm các bài trending khác nếu cần -->
+                        </ul>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <%- include('../partials/footer') %>
+    </div>
+
+    <script src="/js/vendor/jquery-library.js"></script>
+    <script src="/js/vendor/bootstrap.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/jquery.vide.min.js"></script>
+    <script src="/js/countdown.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/parallax.js"></script>
+    <script src="/js/countTo.js"></script>
+    <script src="/js/appear.js"></script>
+    <script src="/js/gmap3.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

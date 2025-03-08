@@ -1,25 +1,31 @@
+const truncateHtml = require('truncate-html');
+
 const slugify = (text) => {
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-\-+/g, "-")
-    .replace(/^-+/, "")
-    .replace(/-+$/, "");
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 };
 
 const formatDate = (date) => {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
 };
 
 const truncateString = (str, length = 100) => {
   if (str.length <= length) return str;
-  return str.slice(0, length) + "...";
+  return str.slice(0, length) + '...';
+};
+
+const truncateContent = (html, length) => {
+  return truncateHtml(html, length, { stripTags: false, keepHtml: true });
 };
 
 const isValidEmail = (email) => {
@@ -34,7 +40,7 @@ const capitalizeFirstLetter = (string) => {
 const removeEmptyProperties = (obj) => {
   return Object.fromEntries(
     Object.entries(obj).filter(([_, value]) => {
-      return value !== null && value !== undefined && value !== "";
+      return value !== null && value !== undefined && value !== '';
     })
   );
 };
@@ -53,4 +59,5 @@ module.exports = {
   capitalizeFirstLetter,
   removeEmptyProperties,
   generateRandomString,
+  truncateContent
 };

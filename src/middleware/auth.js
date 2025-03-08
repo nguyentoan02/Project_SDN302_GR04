@@ -1,31 +1,37 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user'); // Import model User
 
-const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-
+const authMiddleware = async (req, res, next) => {
+  const token = req.cookies.token;
   if (!token) {
-    return res.status(401).send({ error: 'Access denied. No token provided.' });
+    req.flash('error', 'You need login to continue.');
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    console.log('Decoded token:', decoded);
+
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    req.user = user;
+
     next();
   } catch (error) {
-    res.status(400).send({ error: 'Invalid token.' });
+    console.error('Token verification error:', error.message);
+    res.status(400).json({ error: 'Invalid token.', details: error.message });
   }
 };
 
 const checkUserRole = (role) => {
   return (req, res, next) => {
-    if (req.user.role !== role) {
-      return res.status(403).send({ error: 'Access denied. Insufficient permissions.' });
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ error: 'Access denied. Insufficient permissions.' });
     }
     next();
   };
 };
 
-module.exports = {
-  authMiddleware,
-  checkUserRole
-};
+module.exports = { authMiddleware, checkUserRole };
