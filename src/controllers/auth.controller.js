@@ -1,11 +1,17 @@
 const AuthService = require('../services/auth.service');
 const { HTTP_STATUS, MESSAGES } = require('../utils/constant');
-
+const Product = require('../models/Product');
 class AuthController {
   // Đăng ký
 
   async home(req, res) {
-    res.render('pages/home');
+    try {
+      const books = await Product.find(); // Lấy tất cả sách từ MongoDB
+      res.render('pages/home', { books, name: '' }); // Truyền books và name
+    } catch (error) {
+      console.error('❌ Lỗi khi tải trang chủ:', error);
+      res.status(500).send('Lỗi server');
+    }
   }
 
   async dashboard(req, res) {
