@@ -17,12 +17,12 @@
       <!-- Login Form -->
       <form id="loginForm" class="auth-section">
         <div id="loginSection">
-          <label for="loginUsername">Username</label>
+          <label for="loginUsername">Email</label>
           <input
             type="text"
             id="loginUsername"
             name="loginUsername"
-            placeholder="Enter username"
+            placeholder="Enter Email"
             required
           /><br />
           <label for="loginPassword">Password</label>
@@ -208,10 +208,16 @@
               showMessage('Registration successful! Please login.', 'success');
               normalEyeStyle();
               normalHandStyle();
+
+              // Đặt email vừa đăng ký vào ô loginUsername trước khi chuyển form
+              usernameRef.value = email;
+
               setTimeout(() => {
                 loginForm.style.display = 'block';
                 registerForm.style.display = 'none';
                 registerForm.reset();
+                // Focus vào ô password để người dùng có thể nhập ngay
+                passwordRef.focus();
               }, 1000);
             } else {
               showMessage(data.message || 'Registration failed', 'error');

@@ -25,7 +25,6 @@ const userSchema = new mongoose.Schema({
   },
   fullname: {
     type: String,
-    required: [true, 'Vui lòng cung cấp họ và tên'],
     minlength: 2,
     maxlength: 100,
     trim: true
@@ -63,6 +62,30 @@ const userSchema = new mongoose.Schema({
     enum: Object.values(USER_ROLES),
     default: USER_ROLES.USER
   },
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  purchaseHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+  cart: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+      },
+      quantity: {
+        type: Number,
+        required: true,
+        min: 1,
+        default: 1
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now
+      },
+      updateAt: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ],
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });

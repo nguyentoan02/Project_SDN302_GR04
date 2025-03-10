@@ -14,6 +14,7 @@ const methodOverride = require('method-override');
 const helper = require('../utils/helper');
 const flash = require('connect-flash');
 const jwt = require('jsonwebtoken');
+const session = require('express-session');
 
 const app = express();
 
@@ -45,6 +46,22 @@ app.use((req, res, next) => {
   res.locals.user = req.user; // Gán vào res.locals để dùng trong template
   next();
 });
+
+app.use(
+  session({
+    secret: 'your-secure-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.DATABASE_URL,
+      ttl: 24 * 60 * 60
+    }),
+    cookie: {
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  })
+);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -72,7 +89,6 @@ app.use(successHandler);
 app.use('/api', router);
 app.use('/', require('../routes/views/view.routes'));
 
-// 404 Handler
 app.all('*', (req, res, next) => {
   res.status(404).render('404', {
     title: '404 Not Found',
@@ -80,7 +96,6 @@ app.all('*', (req, res, next) => {
   });
 });
 
-// Error handling
 app.use(handleError);
 
 module.exports = app;
