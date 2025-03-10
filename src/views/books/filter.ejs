@@ -19,6 +19,7 @@
             width: 100%;
             max-width: 700px;
             background: linear-gradient(to right, blue, purple, red); /* Gradient to match the image */
+            margin-top: -20px;
         }
         
         .search-container input {
@@ -197,40 +198,45 @@
         }
     </style>
 </head>
-<body class="container mt-5">
-    <form action="/api/books/filter" method="GET" class="d-flex justify-content-center">
-        <div class="search-container">
-            <input type="text" id="name" name="name" placeholder="Nhập tên sách để tìm kiếm." value="<%= name || '' %>">
-            <button type="submit">🔍</button>
-        </div>
-    </form>
+<body >
 
-    <% if (name && books.length > 0) { %>
-        <ul class="book-list">
-            <% books.forEach(book => { %>
-                <li class="book-item">
-                  <a href="/api/books/<%= book.slug %>">
-                    <img src="<%= book.image %>" alt="<%= book.name %>">
-                </a>
-                    <div class="book-info">
-                      <span class="book-name">
-                        <a href="/api/books/<%= book.slug %>"><%= book.name %></a>
-                      </span>
-                      <span class="book-author">Tác giả: <%= book.author %></span>
-                    </div>
-                    <span class="book-price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</span>
-                    <span class="book-stock"><%= book.stock > 0 ? 'In Stock' : 'Out of Stock' %></span>
-                    <div class="book-actions">
-                        <button class="add-to-cart" <%= book.stock === 0 ? 'disabled' : '' %>>Thêm vào giỏ</button>
-                    </div>
-                </li>
-            <% }) %>
-        </ul>
-    <% } else if (name) { %>
-        <p class="no-results">❌ Không tìm thấy sách nào phù hợp.</p>
-    <% } else { %>
-        <p class="text-muted text-center mt-4"></p>
-    <% } %>
+    <div class="container mt-5">
+        <form action="/api/books/filter" method="GET" class="d-flex justify-content-center">
+            <div class="search-container">
+                <input type="text" id="name" name="name" placeholder="Nhập tên sách để tìm kiếm." value="<%= name || '' %>">
+                <button type="submit">🔍</button>
+            </div>
+        </form>
+    
+        <% if (name && books.length > 0) { %>
+            <ul class="book-list">
+                <% books.forEach(book => { %>
+                    <li class="book-item">
+                      <a href="/api/books/<%= book.slug %>">
+                        <img src="<%= book.image %>" alt="<%= book.name %>">
+                    </a>
+                        <div class="book-info">
+                          <span class="book-name">
+                            <a href="/api/books/<%= book.slug %>"><%= book.name %></a>
+                          </span>
+                          <span class="book-author">Tác giả: <%= book.author %></span>
+                        </div>
+                        <span class="book-price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</span>
+                        <span class="book-stock"><%= book.stock > 0 ? 'In Stock' : 'Out of Stock' %></span>
+                        <div class="book-actions">
+                            <button class="add-to-cart" <%= book.stock === 0 ? 'disabled' : '' %>>Thêm vào giỏ</button>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else if (name) { %>
+            <p class="no-results">❌ Không tìm thấy sách nào phù hợp.</p>
+        <% } else { %>
+            <p class="text-muted text-center mt-4"></p>
+        <% } %>
+    </div>
+
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
           const form = document.querySelector("form");
