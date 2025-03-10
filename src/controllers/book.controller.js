@@ -6,7 +6,7 @@ const User = require('../models/user');
 exports.listBooks = async (req, res) => {
   try {
     const books = await Product.find();
-    res.render('books/index', { books, name: '' }); // Truyền thêm name
+    res.render('books/list', { books, name: '' }); // Truyền thêm name
   } catch (error) {
     res.status(500).send('Lỗi khi tải danh sách sách');
   }
