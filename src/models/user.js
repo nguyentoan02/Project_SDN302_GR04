@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
     enum: Object.values(USER_ROLES),
     default: USER_ROLES.USER
   },
-  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product', default: [] }],
   purchaseHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
   cart: [
     {
