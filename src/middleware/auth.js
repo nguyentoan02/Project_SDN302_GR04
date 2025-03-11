@@ -1,10 +1,13 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user'); // Import model User
+const User = require('../models/user');
 
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
+
   if (!token) {
-    req.flash('error', 'You need login to continue.');
+    // flag req.user as null to differentiate between logged in and logged out users
+    req.user = null;
+    return next();
   }
 
   try {
@@ -17,11 +20,11 @@ const authMiddleware = async (req, res, next) => {
     }
 
     req.user = user;
-
     next();
   } catch (error) {
     console.error('Token verification error:', error.message);
-    res.status(400).json({ error: 'Invalid token.', details: error.message });
+    req.user = null;
+    next();
   }
 };
 
