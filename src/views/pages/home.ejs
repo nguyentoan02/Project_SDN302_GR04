@@ -4,150 +4,157 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome to Book Store</title>
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/normalize.css" />
-    <link rel="stylesheet" href="/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/css/icomoon.css" />
-    <link rel="stylesheet" href="/css/jquery-ui.css" />
-    <link rel="stylesheet" href="/css/owl.carousel.css" />
-    <link rel="stylesheet" href="/css/transitions.css" />
-    <link rel="stylesheet" href="/css/main.css" />
-    <link rel="stylesheet" href="/css/color.css" />
-    <link rel="stylesheet" href="/css/responsive.css" />
     <style>
-      .controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
+      .tg-middlecontainer {
+        padding: 20px 0;
+        background: #f8f8f8;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+      }
+
+      .tg-logo {
+        display: block;
+        text-align: center;
         margin-bottom: 20px;
       }
 
-      .btnHeader {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 15px;
-      }
-
-      .btn-custom {
-        padding: 12px 20px;
-        border: none;
+      .tg-logo a {
         text-decoration: none;
-        border-radius: 20px;
-        cursor: pointer;
+        font-size: 32px;
+        color: #333;
         font-weight: bold;
-        transition: background-color 0.3s ease;
-        font-size: 16px;
-        display: inline-block;
-        text-align: center;
       }
 
-      .favorites-btn {
-        background-color: #564b48 !important;
-        color: white !important;
+      .tg-logo span {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        font-weight: normal;
       }
 
-      .favorites-btn:hover {
-        background-color: #7a6761 !important;
+      .tg-middlecontent {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px; 
+        flex-wrap: wrap; 
       }
 
-      .filter-btn {
-        background-color: #6a5151 !important;
-        color: white !important;
+      .tg-searchbox {
+        flex: 1 1 300px; 
+        margin: 0; 
       }
 
-      .filter-btn:hover {
-        background-color: #5d7a72 !important;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    
+      .tg-wishlistandcart {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 0; 
+        margin-right: 110px;
       }
 
-      .search-box {
-        flex-grow: 1;
-        max-width: 500px;
-      }
-
-      .search-box input {
-        width: 100%;
-        padding: 12px 15px;
+      .tg-wishlistandcart a {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 8px 15px; 
+        background: #fff;
+        border: 1px solid #ddd;
         border-radius: 25px;
-        border: 1px solid #ccc;
+        color: #333;
+        font-size: 14px; 
+        transition: all 0.3s ease;
+      }
+
+      .tg-wishlistandcart a:hover {
+        background: #007bff;
+        color: #fff;
+        border-color: #007bff;
+      }
+
+      .tg-themebadge {
+        display: inline-flex;
+        width: 18px; 
+        height: 18px;
+        background: #eb2929;
+        color: #fff;
+        border-radius: 50%;
+        justify-content: center;
+        align-items: center;
+        margin-right: 6px; 
+        font-size: 12px; 
+      }
+
+      #tg-wishlisst:hover .tg-themebadge {
+        background: #fff;
+        color: #007bff;
+      }
+
+      #tg-minicart:hover .tg-themebadge {
+        background: #fff;
+        color: #007bff;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .tg-middlecontent {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .tg-logo a {
+          font-size: 24px;
+        }
+
+        .tg-searchbox {
+          flex: 1 1 100%; 
+        }
+
+        .tg-wishlistandcart {
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+        }
       }
     </style>
   </head>
   <body>
     <!-- Include header -->
-    <%- include('../partials/header') %>
+    <%- include('../partials/navbar') %>
 
     <!-- Thêm phần tg-middlecontainer -->
     <div class="tg-middlecontainer">
       <div class="container">
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <strong class="tg-logo">
-              <a href="#"><img src="/images/logo.png" alt="company name here" /></a>
-            </strong>
-            <div class="tg-wishlistandcart">
-              <div class="dropdown tg-themedropdown tg-wishlistdropdown">
-                <a
-                  href="/api/favorites"
-                  id="tg-wishlisst"
-                  class="tg-btnthemedropdown"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <span class="tg-themebadge">+</span>
-                  <i class="icon-heart"></i>
-                  <span>Wishlist</span>
-                </a>
-                <div class="dropdown-menu tg-themedropdownmenu" aria-labelledby="tg-wishlisst">
-                  <div class="tg-description"><p>No products were added to the wishlist!</p></div>
-                </div>
-              </div>
-              <div class="dropdown tg-themedropdown tg-minicartdropdown">
-                <a
-                  href="#"
-                  id="tg-minicart"
-                  class="tg-btnthemedropdown"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <span class="tg-themebadge">+</span>
-                  <i class="icon-cart"></i>
-                  <span>Cart</span>
-                </a>
-       
-              </div>
-              <div class="dropdown tg-themedropdown tg-minicartdropdown">
-                <a
-                  href="/api/books/filterAll"
-                  id="tg-minicart"
-                  class="tg-btnthemedropdown"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <span class="tg-themebadge">+</span>
-                  <i class="icon-cart"></i>
-                  <span>Filters</span>
-                </a>
-              </div>
-            </div>
-            <div class="tg-searchbox">
-              <%- include('../books/filter', { books, name }) %>
-            </div>
+        <div class="tg-middlecontent">
+          <div class="tg-searchbox">
+            <%- include('../books/filter', { books, name }) %>
+          </div>
+          <div class="tg-wishlistandcart">
+            <a href="/api/favorites" id="tg-wishlisst">
+              <span class="tg-themebadge">+</span>
+              <span>♥ Wishlist</span>
+            </a>
+            <a href="#" id="tg-minicart">
+              <span class="tg-themebadge">+</span>
+              <span>🛒 Cart</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
+
     <!-- Phần body chính, sử dụng nội dung từ index.ejs -->
     <div class="container mt-4">
       <%- include('../books/list', { books, name }) %>
     </div>
 
     <!-- Include footer -->
-    <%- include('../partials/footer') %>
+    <%- include('../partials/footerHome') %>
   </body>
 </html>
