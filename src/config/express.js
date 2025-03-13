@@ -72,7 +72,8 @@ app.use(
       'default-src': ["'self'"],
       'img-src': ['*'],
       'script-src': ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net']
-    }
+    },
+    contentSecurityPolicy: false
   })
 );
 app.use((req, res, next) => {

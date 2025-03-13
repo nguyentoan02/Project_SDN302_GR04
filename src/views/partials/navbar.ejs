@@ -1,0 +1,318 @@
+<header id="tg-header" class="tg-header tg-haslayout">
+  <style>
+    /* Modern header styles */
+    .tg-header {
+      background: linear-gradient(135deg, #ffffff, #f8f9fe);
+      border-bottom: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      padding: 5px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .tg-nav {
+      display: flex;
+      justify-content: flex-start; /* Changed from space-between to flex-start */
+      align-items: center;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+      gap: 10px; /* Added small gap between logo/navigation and userlogin */
+    }
+
+    .tg-logo {
+      display: flex;
+      align-items: center;
+      margin-right: 10px; /* Reduced margin */
+    }
+
+    .tg-logo img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      margin-right: 10px;
+    }
+
+    .tg-navigation ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      margin-bottom: 5px;
+    }
+
+    .tg-navigation ul li {
+      margin-left: 10px; /* Reduced from 30px to 10px */
+    }
+
+    .tg-navigation ul li a {
+      color: #2d3748;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .tg-navigation ul li a:hover {
+      color: #3b82f6;
+      background-color: rgba(59, 130, 246, 0.05);
+    }
+
+    .tg-userlogin {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: auto; /* Pushes userlogin to the right */
+    }
+
+    .tg-btnlogin,
+    .tg-btnsignup {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tg-btnlogin {
+      background-color: #a5b0bc;
+      color: #000000;
+    }
+
+    .tg-btnlogin:hover {
+      background-color: #374151;
+      transform: translateY(-1px);
+    }
+
+    .tg-btnsignup {
+      background-color: #3b82f6;
+      color: #ffffff;
+    }
+
+    .tg-btnsignup:hover {
+      background-color: #2563eb;
+      transform: translateY(-1px);
+    }
+
+    /* Modern dropdown */
+    .tg-userdropdown {
+      position: relative;
+    }
+
+    .tg-dropbtn {
+      display: flex;
+      align-items: center;
+      background-color: #ffffff;
+      color: #2d3748;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .tg-dropbtn:hover {
+      background-color: #f8f9fe;
+    }
+
+    .tg-dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #ffffff;
+      min-width: 180px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .tg-dropdown-content a {
+      color: #464a51;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .tg-dropdown-content a:hover {
+      background-color: #f8f9fe;
+      color: #3b82f6;
+    }
+
+    .tg-userlogin figure img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tg-userlogin span {
+      color: #000000;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .tg-nav {
+        flex-direction: column;
+        padding: 15px;
+        justify-content: center;
+      }
+
+      .tg-logo {
+        margin-bottom: 15px;
+        margin-right: 0;
+      }
+
+      .tg-navigation ul {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+        gap: 5px;
+      }
+
+      .tg-navigation ul li {
+        margin: 0;
+        width: 100%;
+      }
+
+      .tg-navigation ul li a {
+        display: block;
+        padding: 10px;
+      }
+
+      .tg-userlogin {
+        margin-top: 15px;
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .tg-btnlogin,
+      .tg-btnsignup {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+
+  <div class="tg-navigationarea">
+    <div class="tg-nav">
+      <div class="tg-logo">
+        <a href="/api/auth/home">
+          <img src="https://thumbs.dreamstime.com/b/minimal-d-vector-library-logo-design-stars-doodle-isolated-minimalism-bookshelf-silhouette-flying-out-style-white-352113904.jpg" alt="Website Logo">
+        </a>
+      </div>
+      <div class="tg-navigation">
+        <ul>
+          <li><a href="/api/auth/home">Trang chủ</a></li>
+          <li><a href="/api/articles">Tin tức</a></li>
+          <li><a href="/api/books/filterAll">Lọc sách</a></li>
+        </ul>
+      </div>
+      <div class="tg-userlogin">
+        <% if (typeof user !== 'undefined' && user) { %>
+          <figure>
+            <a href="/api/auth/profile">
+              <img src="<%= user.avatar || '/images/users/default-avatar.jpg' %>" alt="<%= user.fullname || user.username || 'User' %>" />
+            </a>
+          </figure>
+          <span>Hi, <%= user.fullname || user.username || 'User' %></span>
+          <div class="tg-userdropdown">
+            <div class="tg-dropbtn">
+              <span>▼</span>
+            </div>
+            <div class="tg-dropdown-content">
+              <a href="/api/auth/profile">View Profile</a>
+              <a href="#">View Order</a>
+              <a href="/api/auth/logout" id="tg-btnlogout">Đăng xuất</a>
+            </div>
+          </div>
+        <% } else { %>
+          <a href="/api/auth" class="tg-btnlogin">
+            <span>Đăng nhập</span>
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Dropdown control
+      const dropdown = document.querySelector('.tg-userdropdown');
+      const dropdownContent = document.querySelector('.tg-dropdown-content');
+      let timeoutId;
+
+      if (dropdown && dropdownContent) {
+        // Show dropdown on mouseenter
+        dropdown.addEventListener('mouseenter', function () {
+          clearTimeout(timeoutId);
+          dropdownContent.style.display = 'block';
+        });
+
+        // Hide dropdown with delay on mouseleave
+        dropdown.addEventListener('mouseleave', function () {
+          timeoutId = setTimeout(function () {
+            // Check if mouse is not over dropdown content
+            if (!dropdownContent.matches(':hover')) {
+              dropdownContent.style.display = 'none';
+            }
+          }, 200);
+        });
+
+        // Keep dropdown visible when hovering over content
+        dropdownContent.addEventListener('mouseenter', function () {
+          clearTimeout(timeoutId);
+        });
+
+        // Hide dropdown with delay when leaving content
+        dropdownContent.addEventListener('mouseleave', function () {
+          timeoutId = setTimeout(function () {
+            dropdownContent.style.display = 'none';
+          }, 200);
+        });
+      }
+
+      // Logout functionality
+      const logoutBtn = document.getElementById('tg-btnlogout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (confirm('Are you sure you want to logout?')) {
+            fetch('/api/auth/logout', {
+              method: 'GET',
+              credentials: 'include'
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error('Logout failed');
+                }
+                return response.json();
+              })
+              .then((data) => {
+                window.location.href = '/api/auth/home';
+              })
+              .catch((error) => {
+                console.error('Logout Error:', error);
+                alert('An error occurred during logout. Please try again.');
+              });
+          }
+        });
+      }
+    });
+  </script>
+</header>
