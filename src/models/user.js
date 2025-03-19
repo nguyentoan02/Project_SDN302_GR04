@@ -86,6 +86,10 @@ const userSchema = new mongoose.Schema({
       }
     }
   ],
+  lock: {
+    type: Boolean,
+    default: false
+  },
   resetPasswordToken: String,
   resetPasswordExpires: Date
 });
