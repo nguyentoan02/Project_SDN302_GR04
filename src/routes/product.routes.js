@@ -5,6 +5,7 @@ const { authMiddleware, checkUserRole } = require("../middleware/auth");
 const Product = require("../models/Product"); // Ensure Product model is imported
 const cloudinary = require("../config/cloudinary"); // Import Cloudinary configuration
 const User = require("../models/user"); // Ensure User model is imported
+const mongoose = require("mongoose");
 const {
   getAllProducts,
   getProductById,

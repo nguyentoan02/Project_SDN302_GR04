@@ -51,18 +51,18 @@
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <!-- <th>Actions</th> -->
                             </tr>
                         </thead>
                         <tbody>
                             <% users.forEach(user => { %>
-                                <% if (user.role === 'shopper') { %>
+                                <% if (user.role === 'user') { %>
                                     <tr>
                                         <td><%= user.username %></td>
                                         <td><%= user.email %></td>
                                         <td><%= user.role %></td>
                                         <td><%= user.lock ? 'Locked' : 'Active' %></td>
-                                        <td>
+                                        <!-- <td>
                                             <% if (user.lock) { %>
                                                 <form action="/api/products/users/unlock/<%= user._id %>" method="POST" style="display:inline;">
                                                     <button type="submit" class="btn btn-sm btn-success">Unlock</button>
@@ -72,7 +72,7 @@
                                                     <button type="submit" class="btn btn-sm btn-warning">Lock</button>
                                                 </form>
                                             <% } %>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 <% } %>
                             <% }) %>
