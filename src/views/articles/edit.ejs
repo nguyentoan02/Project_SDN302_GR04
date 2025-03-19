@@ -1,0 +1,183 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Security-Policy" />
+    <title>Edit Article | Book Library</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/icomoon.css" />
+    <link rel="stylesheet" href="/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/css/owl.carousel.css" />
+    <link rel="stylesheet" href="/css/transitions.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/color.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+    <style>
+      .tg-formcreate {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .tg-formcreate .form-group {
+        margin-bottom: 20px;
+      }
+      .tg-formcreate label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+      }
+      .tg-formcreate input,
+      .tg-formcreate textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .tg-formcreate .tg-btn {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+      .tg-formcreate .tg-btn:hover {
+        background-color: #218838;
+      }
+      .tg-current-image {
+        max-width: 200px;
+        margin-top: 10px;
+        border-radius: 4px;
+      }
+    </style>
+    <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <script src="/js/tinymce/tinymce.min.js"></script>
+    <script src="/js/editor.js"></script>
+  </head>
+  <body>
+    <div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+      <%- include('../partials/header') %>
+      <div
+        class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner"
+        data-z-index="-100"
+        data-appear-top-offset="600"
+        data-parallax="scroll"
+        data-image-src="/images/parallax/bgparallax-07.jpg"
+      >
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+              <div class="tg-innerbannercontent">
+                <h1>Edit Article</h1>
+                <ol class="tg-breadcrumb">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/articles">News</a></li>
+                  <li class="tg-active">Edit Article</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <main id="tg-main" class="tg-main tg-haslayout">
+        <div class="tg-sectionspace tg-haslayout">
+          <div class="container">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="tg-formcreate">
+                  <form
+                    action="/api/admin/articles/<%= article._id %>?_method=PUT"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    id="articleForm"
+                  >
+                    <div class="form-group">
+                      <label for="title">Article Title</label>
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="<%- article.title %>"
+                        placeholder="Enter article title"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="image">Article Image</label>
+                      <input type="file" id="image" name="image" accept="image/*" />
+                      <input type="hidden" name="existingImage" value="<%= article.image %>" />
+                      <% if (article.image) { %>
+                        <img src="<%= article.image %>" alt="Current Image" class="tg-current-image" />
+                        <p style="font-size: 12px; color: #666;">Upload a new image to replace the current one (optional).</p>
+                      <% } %>
+                    </div>
+                    <div class="form-group">
+                      <label for="content">Content</label>
+                      <div id="content"></div>
+                      <input type="hidden" id="contentHidden" name="content" value="<%- article.content %>" />
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="tg-btn">Update Article</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <%- include('../partials/footer') %>
+    </div>
+    <script src="/js/vendor/jquery-library.js"></script>
+    <script src="/js/vendor/bootstrap.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/jquery.vide.min.js"></script>
+    <script src="/js/countdown.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/parallax.js"></script>
+    <script src="/js/countTo.js"></script>
+    <script src="/js/appear.js"></script>
+    <script src="/js/gmap3.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Khởi tạo TinyMCE với nội dung hiện tại
+        document.addEventListener('DOMContentLoaded', function() {
+            tinymce.init({
+                selector: '#content',
+                height: 400,
+                plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount',
+                toolbar: 'undo redo | styleselect | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media table | removeformat | code fullscreen',
+                menubar: 'file edit insert view format table tools help',
+                content_style: 'body { font-family: Arial, sans-serif; font-size: 14px }',
+                setup: function(editor) {
+                    editor.on('init', function() {
+                        editor.setContent(document.getElementById('contentHidden').value);
+                    });
+                }
+            });
+
+            // Cập nhật giá trị contentHidden trước khi submit
+            const form = document.getElementById('articleForm');
+            form.addEventListener('submit', function(e) {
+                const content = tinymce.get('content').getContent();
+                if (!content) {
+                    e.preventDefault();
+                    alert('Please enter content!');
+                } else {
+                    document.getElementById('contentHidden').value = content;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

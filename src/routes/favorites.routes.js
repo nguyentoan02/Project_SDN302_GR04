@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const favoritesController = require('../controllers/favorites.controller'); // Updated import
+const favoritesController = require('../controllers/favorites.controller');
 const { registerRoute } = require('./register.routes');
+const { authMiddleware } = require('../middleware/auth');
 
-// Add to favorites (was wishlist)
-router.post('/:productId', favoritesController.addToWishlist);
+// Áp dụng authMiddleware nhưng không bắt buộc (optional)
+router.post('/:productId', authMiddleware, favoritesController.addToWishlist);
 
-// Get favorites
-router.get('/', favoritesController.getWishlist);
-// Remove from favorites
-router.delete('/:productId', favoritesController.removeFromWishlist);
+router.get('/', authMiddleware, favoritesController.getWishlist);
+
+router.delete('/:productId', authMiddleware, favoritesController.removeFromWishlist);
 
 registerRoute('favorites', router);
 

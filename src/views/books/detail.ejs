@@ -15,7 +15,7 @@
             max-width: 1200px;
             margin-top: 20px;
         }
-
+        
         .book-card {
             background-color: #fff;
             border-radius: 10px;
@@ -256,6 +256,74 @@
         .related-book-stock.out-of-stock {
             color: #dc3545; 
         }
+        .review-item {
+    background-color: #f9f9f9;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.review-item strong {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.review-item .text-muted {
+    font-size: 0.9rem;
+}
+
+.review-item .rating {
+    font-size: 1.2rem;
+}
+.review-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse; /* Reverse order for better UX */
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.star-label {
+    font-size: 1.5rem;
+    color: #ccc; /* Default gray color */
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars input[type="radio"]:checked ~ .star-label,
+.rating-stars .star-label:hover,
+.rating-stars .star-label:hover ~ .star-label {
+    color: #ffc107; /* Yellow for selected/hovered stars */
+}
+
+.review-form .form-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.review-form .form-control {
+    border-radius: 5px;
+}
+
+.review-form .btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 25px;
+}
+
+.review-form .btn-primary:hover {
+    background-color: #0056b3;
+}
+        
 
         /* Responsive cho related books */
         @media (max-width: 768px) {
@@ -276,10 +344,13 @@
     </style>
 </head>
 <body>
+    <!-- Include header -->
+    <%- include('../partials/navbar') %>
+
     <div class="container mt-5">
         <!-- Nút quay lại danh sách được đặt lên đầu -->
         <div class="mb-4">
-            <a href="/api/books" class="btn btn-secondary">⬅ Quay lại danh sách</a>
+            <a href="/api/auth/home" class="btn btn-secondary">⬅ Quay lại trang chủ</a>
         </div>
 
         <div class="row book-card">
@@ -347,8 +418,44 @@
                     <p class="text-muted"><%= book.description %></p>
                 </div>
                 <div class="tab-pane fade review-tab" id="review" role="tabpanel" aria-labelledby="review-tab">
-                    <!-- Nội dung đánh giá sẽ được thêm qua EJS nếu có, hiện tại để trống -->
+                    <% if (reviews && reviews.length > 0) { %>
+                        <% reviews.forEach(review => { %>
+                            <div class="review-item mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong><%= review.userId.username || 'Ẩn danh' %></strong>
+                                        <span class="text-muted ms-2">
+                                            <%= new Date(review.reviewDate).toLocaleDateString('vi-VN') %>
+                                        </span>
+                                    </div>
+                                    <div class="rating">
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <span class="<%= i <= review.rating ? 'text-warning' : 'text-muted' %>">★</span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <p class="mt-2"><%= review.comment %></p>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="text-muted">Chưa có đánh giá nào cho sách này.</p>
+                    <% } %>
                 </div>
+            </div>
+            <!-- Review Form -->
+            <div class="review-form mt-4">
+                <h5>Viết đánh giá của bạn</h5>
+                <form action="/api/books/<%= book.slug %>/reviews" method="POST" id="reviewForm">
+                    <input type="hidden" name="productId" value="<%= book._id %>">
+                    <div class="rating-stars">
+                      <% for (let i = 5; i >= 1; i--) { %>
+                        <input type="radio" name="rating" id="star<%= i %>" value="<%= i %>" required class="d-none">
+                        <label for="star<%= i %>" class="star-label">★</label>
+                      <% } %>
+                    </div>
+                    <textarea name="comment" id="comment" class="form-control" rows="3" placeholder="Nhập nhận xét của bạn..." required></textarea>
+                    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                  </form>
             </div>
         </div>
 
@@ -383,6 +490,10 @@
         </div>
     </div>
 
+
+    <!-- Include footer -->
+    <%- include('../partials/footerHome') %>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -409,6 +520,32 @@
                 });
             }
         });
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  fetch('/api/books/<%= book.slug %>/reviews', {
+    method: 'POST',
+    body: formData,
+    credentials: 'include'
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      location.reload();
+    } else {
+      alert('Lỗi: ' + (data.message || 'Không thể gửi đánh giá'));
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Lỗi gửi đánh giá: ' + error.message);
+  });
+});
     </script>
 </body>
 </html>

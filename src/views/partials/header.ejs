@@ -1,0 +1,246 @@
+<header id="tg-header" class="tg-header tg-haslayout">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/css/icomoon.css" />
+  <link rel="stylesheet" href="/css/jquery-ui.css" />
+  <link rel="stylesheet" href="/css/owl.carousel.css" />
+  <link rel="stylesheet" href="/css/transitions.css" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/color.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <style>
+    .tg-btnlogout {
+      margin-left: 15px;
+      color: #fff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      background-color: #dc3545;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .tg-btnlogout:hover {
+      background-color: #c82333;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .tg-btnlogout .icon-exit {
+      margin-right: 5px;
+      font-size: 16px;
+    }
+
+    .tg-userlogin {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Adjust navigation area layout */
+    .tg-navigationarea {
+      background: linear-gradient(90deg, #008000, #00cc00);
+      border-bottom: 2px solid #006600;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .tg-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+    }
+
+    .tg-navigation ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .tg-navigation ul li {
+      margin-right: 20px;
+      position: relative;
+    }
+
+    .tg-navigation ul li a {
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 10px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .tg-navigation ul li a:hover {
+      color: #ffd700;
+    }
+
+    .tg-navigation ul .sub-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      min-width: 150px;
+      z-index: 1000;
+    }
+
+    .tg-navigation ul .menu-item-has-children:hover .sub-menu {
+      display: block;
+    }
+
+    .tg-navigation ul .sub-menu li {
+      margin: 0;
+    }
+
+    .tg-navigation ul .sub-menu li a {
+      color: #333;
+      padding: 8px 15px;
+      display: block;
+    }
+
+    .tg-navigation ul .sub-menu li a:hover {
+      background-color: #f1f1f1;
+      color: #007bff;
+    }
+
+    .tg-userlogin {
+      margin-left: auto;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .tg-nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .tg-navigation ul {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .tg-navigation ul li {
+        margin: 10px 0;
+      }
+
+      .tg-navigation ul .sub-menu {
+        position: static;
+        box-shadow: none;
+        border: none;
+        padding-left: 20px;
+      }
+
+      .tg-userlogin {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Ensure toggle button visibility */
+    .navbar-toggle {
+      border: 1px solid #fff;
+      border-radius: 4px;
+    }
+
+    .navbar-toggle .icon-bar {
+      background-color: #fff;
+    }
+  </style>
+
+  <!-- Navigation area -->
+  <div class="tg-navigationarea">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <nav id="tg-nav" class="tg-nav">
+            <div class="navbar-header">
+              <button
+                type="button"
+                class="navbar-toggle collapsed"
+                data-toggle="collapse"
+                data-target="#tg-navigation"
+                aria-expanded="false"
+              >
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div id="tg-navigation" class="collapse navbar-collapse tg-navigation">
+              <ul>
+                <li class="menu-item-has-children">
+                  <a href="/api/auth/home">Home</a>
+                </li>
+                <li><a href="/products.html">Articles</a></li>
+                <li><a href="/products.html">View Order</a></li>
+                <li><a href="/contactus.html">Profile</a></li>
+              </ul>
+              <!-- Moved tg-userlogin here -->
+              <div class="tg-userlogin">
+                <% if (typeof user !== 'undefined' && user) { %>
+                  <figure>
+                    <a href="/api/auth/profile">
+                      <img src="<%= user.avatar || '/images/users/default-avatar.jpg' %>" alt="<%= user.fullname || user.username || 'User' %>" />
+                    </a>
+                  </figure>
+                  <span>Hi, <%= user.fullname || user.username || 'User' %></span>
+                  <a href="/api/auth/logout" class="tg-btnlogout" id="tg-btnlogout">
+                    <i class="icon-exit"></i>
+                    <span>Logout</span>
+                  </a>
+                <% } else { %>
+                  <a href="/api/auth" class="tg-btnlogin">
+                    <i class="icon-login"></i>
+                    <span>Login</span>
+                  </a>
+                <% } %>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const logoutBtn = document.getElementById('tg-btnlogout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          if (confirm('Are you sure you want to logout?')) {
+            fetch('/api/auth/logout', {
+              method: 'GET',
+              credentials: 'include'
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error('Logout failed');
+                }
+                return response.json();
+              })
+              .then((data) => {
+                window.location.href = '/api/auth';
+              })
+              .catch((error) => {
+                console.error('Logout Error:', error);
+                alert('An error occurred during logout. Please try again.');
+              });
+          }
+        });
+      }
+    });
+  </script>
+</header>
+<hr />
