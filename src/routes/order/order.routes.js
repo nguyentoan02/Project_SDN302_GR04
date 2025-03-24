@@ -6,7 +6,7 @@ const globalAsyncHandler = require('../../middleware/handler');
 
 globalAsyncHandler(router);
 
-router.get('/orders/all', orderController.getAllOrders);
+router.get('/history', orderController.getAllOrders);
 router.post('/create', orderController.createOrderFromSelectedProducts);
 router.get('/:orderId', orderController.getOrderById);
 

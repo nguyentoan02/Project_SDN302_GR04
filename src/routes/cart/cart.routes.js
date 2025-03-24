@@ -4,8 +4,11 @@ const router = express.Router();
 
 const { registerRoute } = require('../register.routes');
 const globalAsyncHandler = require('../../middleware/handler');
+const { authMiddleware } = require('../../middleware/auth');
 
 globalAsyncHandler(router);
+
+router.use(authMiddleware);
 
 router.get('/products', cartController.getCart);
 router.post('/new', cartController.addToCart);

@@ -107,6 +107,15 @@
             background-color: #cc0000;
         }
 
+        .buy-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .buy-btn.success {
+            background-color: #28a745;
+        }
+
         .wishlist-btn {
             display: none;
             position: absolute;
@@ -202,7 +211,12 @@
                                 <h6 class="card-title"><%= book.name %></h6>
                             </a>
                             <p class="price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</p>
-                            <button class="buy-btn">Mua ngay</button>
+                            <button class="buy-btn" 
+                                        data-product-id="<%= book._id %>"
+                                        <%= book.stock === 0 ? 'disabled' : '' %>
+                                >
+                                    <%= book.stock === 0 ? 'Hết hàng' : 'Thêm vào giỏ' %>
+                            </button>
                         </div>
                     </div>
                 <% }); %>
@@ -284,6 +298,52 @@
                 });
             });
         });
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+    document.querySelectorAll('.buy-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            const productId = this.dataset.productId;
+            try {
+                this.disabled = true;
+                this.textContent = 'Đang thêm...';
+
+                const response = await fetch('/api/cart/new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    this.textContent = 'Đã thêm ✓';
+                    setTimeout(() => {
+                        this.textContent = 'Thêm vào giỏ';
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    if (response.status === 401) {
+                        window.location.href = '/api/auth';
+                    } else {
+                        throw new Error(data.message || 'Failed to add to cart');
+                    }
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                alert(error.message || 'Failed to add to cart');
+                this.textContent = 'Thêm vào giỏ';
+                this.disabled = false;
+            }
+        });
+    });
+});
     </script>
 </body>
 </html>
