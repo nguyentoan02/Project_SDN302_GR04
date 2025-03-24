@@ -2,6 +2,7 @@ const Product = require('../models/Product');
 const cloudinary = require('../config/cloudinary');
 const { SuccessResponse } = require('../core/success');
 const { BadRequest, AppError } = require('../core/error');
+const ExcelJS = require('exceljs');
 
 // Lấy tất cả sản phẩm
 exports.getAllProducts = async (req, res) => {
@@ -118,7 +119,7 @@ exports.createProduct = async (req, res) => {
             const product = new Product({
               name,
               code,
-author,
+              author,
               category,
               price,
               stock,
@@ -245,5 +246,55 @@ exports.deleteProduct = async (req, res) => {
     res.status(200).json({ message: 'Sản phẩm đã bị xóa' });
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
+  }
+};
+
+// Export products to Excel
+exports.exportProductsToExcel = async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Products');
+
+    worksheet.columns = [
+      { header: 'Name', key: 'name', width: 30 },
+      { header: 'Code', key: 'code', width: 20 },
+      { header: 'Author', key: 'author', width: 30 },
+      { header: 'Category', key: 'category', width: 20 },
+      { header: 'Price', key: 'price', width: 10 },
+      { header: 'Stock', key: 'stock', width: 10 },
+      { header: 'Publisher', key: 'publisher', width: 30 },
+      { header: 'Publish Year', key: 'publishYear', width: 15 },
+      { header: 'Pages', key: 'pages', width: 10 },
+      { header: 'Dimensions', key: 'dimensions', width: 20 },
+      { header: 'Country', key: 'country', width: 20 },
+      { header: 'Image', key: 'image', width: 50 }
+    ];
+
+    products.forEach(product => {
+      worksheet.addRow({
+        name: product.name,
+        code: product.code,
+        author: product.author,
+        category: product.category,
+        price: product.price,
+        stock: product.stock,
+        publisher: product.publisher,
+        publishYear: product.publishYear,
+        pages: product.pages,
+        dimensions: product.dimensions,
+        country: product.country,
+        image: product.image
+      });
+    });
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=products.xlsx');
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    res.status(500).json({ message: 'Error exporting products to Excel', error });
   }
 };

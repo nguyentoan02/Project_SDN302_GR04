@@ -6,20 +6,36 @@
     <title>Danh sách sách</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Đảm bảo html và body chiếm toàn bộ chiều rộng */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             background-color: #f8f9fa;
             font-size: 1.1rem;
         }
 
+        /* Container-fluid cho full-width */
+        .container-fluid {
+            width: 100%;
+            padding: 0 20px; /* Tạo khoảng cách hợp lý */
+            margin-top: 60px; /* Đảm bảo nội dung không bị che khuất bởi navbar (tùy chiều cao navbar) */
+        }
+
         .carousel-container {
             overflow: hidden;
             position: relative;
-            max-width: 100%;
+            width: 100%; /* Đảm bảo mở rộng toàn màn hình */
         }
 
         .carousel-track {
             display: flex;
             transition: transform 0.5s ease-in-out;
+            width: 100%; /* Đảm bảo nội dung carousel mở rộng */
         }
 
         .book-card {
@@ -91,6 +107,15 @@
             background-color: #cc0000;
         }
 
+        .buy-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .buy-btn.success {
+            background-color: #28a745;
+        }
+
         .wishlist-btn {
             display: none;
             position: absolute;
@@ -134,35 +159,74 @@
             margin-bottom: 10px;
             margin-top: 10px;
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .book-card {
+                width: 200px; /* Giảm kích thước thẻ sách trên màn hình nhỏ */
+            }
+
+            .container-fluid {
+                padding: 0 10px; /* Giảm padding trên màn hình nhỏ */
+                margin-top: 50px; /* Điều chỉnh margin-top cho navbar trên màn hình nhỏ */
+            }
+
+            .navbar {
+                padding: 5px 10px; /* Giảm padding navbar trên màn hình nhỏ */
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .container-fluid {
+                max-width: 1600px; /* Giới hạn chiều rộng tối đa trên màn hình lớn */
+                margin: 0 auto;
+            }
+        }
     </style>
 </head>
-<body class="container mt-4">
+<body>
 
-    <h1 class="mb-4 text-center">📚 Danh Sách Sách</h1>
+    <div class="container-fluid">
+        <h1 class="mb-4 text-center">📚 Danh Sách Sách</h1>
 
-    <div class="carousel-container">
-        <button class="carousel-btn prev">❮</button>
-        <div class="carousel-track" id="bookCarousel">
-            <% books.forEach((book) => { %>
-                <div class="book-card">
-                    <a href="/api/books/<%= book.slug %>">
-                        <img src="<%= book.image %>" alt="<%= book.name %>">
-                    </a>
-                    <button class="wishlist-btn" data-product-id="<%= book._id %>">♥ Thêm vào yêu thích</button>
-                    <div class="card-body">
-                        <a href="/api/books/<%= book.slug %>" class="text-decoration-none text-dark">
-                            <h6 class="card-title"><%= book.name %></h6>
+        <div class="carousel-container">
+            <button class="carousel-btn prev">❮</button>
+            <div class="carousel-track" id="bookCarousel">
+                <% books.forEach((book) => { %>
+                    <div class="book-card">
+                        <a href="/api/books/<%= book.slug %>">
+                            <img src="<%= book.image %>" alt="<%= book.name %>">
                         </a>
-                        <p class="price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</p>
-                        <button class="buy-btn">Mua ngay</button>
+                        <% 
+                            let isInWishlist = false;
+                            if (typeof user !== 'undefined' && user && user.favorites && user.favorites.includes(book._id.toString())) {
+                                isInWishlist = true;
+                            }
+                        %>
+                        <button class="wishlist-btn" data-product-id="<%= book._id %>" <%= isInWishlist ? 'disabled' : '' %>>
+                            <%= isInWishlist ? 'Đã yêu thích' : '♥ Thêm vào yêu thích' %>
+                        </button>
+                        <div class="card-body">
+                            <a href="/api/books/<%= book.slug %>" class="text-decoration-none text-dark">
+                                <h6 class="card-title"><%= book.name %></h6>
+                            </a>
+                            <p class="price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</p>
+                            <button class="buy-btn" 
+                                        data-product-id="<%= book._id %>"
+                                        <%= book.stock === 0 ? 'disabled' : '' %>
+                                >
+                                    <%= book.stock === 0 ? 'Hết hàng' : 'Thêm vào giỏ' %>
+                            </button>
+                        </div>
                     </div>
-                </div>
-            <% }); %>
+                <% }); %>
+            </div>
+            <button class="carousel-btn next">❯</button>
         </div>
-        <button class="carousel-btn next">❯</button>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const track = document.getElementById("bookCarousel");
@@ -172,20 +236,20 @@
             const bookWidth = books[0].offsetWidth + 15;
             let index = 0;
             let autoScroll;
-    
+
             function updateCarousel() {
                 track.style.transform = `translateX(-${index * bookWidth}px)`;
             }
-    
+
             function nextSlide() {
                 if (index < books.length - 5) {
                     index++;
                 } else {
-                    index = 0; 
+                    index = 0;
                 }
                 updateCarousel();
             }
-    
+
             function prevSlide() {
                 if (index > 0) {
                     index--;
@@ -194,43 +258,92 @@
                 }
                 updateCarousel();
             }
-    
+
             next.addEventListener("click", () => {
                 clearInterval(autoScroll);
                 nextSlide();
                 startAutoScroll();
             });
-    
+
             prev.addEventListener("click", () => {
                 clearInterval(autoScroll);
                 prevSlide();
                 startAutoScroll();
             });
-    
+
             function startAutoScroll() {
                 autoScroll = setInterval(nextSlide, 3000);
             }
-    
+
             startAutoScroll();
 
             // Add to Wishlist functionality
             $('.wishlist-btn').on('click', function(event) {
                 const productId = $(this).data('product-id');
+                const $button = $(this);
                 $.ajax({
                     url: `/api/favorites/${productId}`,
                     method: 'POST',
                     success: function(response) {
                         alert(response.message);
-                        $(event.target).hide(); 
+                        $button.text('Đã yêu thích').prop('disabled', true); 
                     },
                     error: function(error) {
-                        alert('Có lỗi xảy ra khi thêm vào danh sách yêu thích: ' + error.responseJSON?.message || 'Unknown error');
+                        if (error.status === 401 || error.responseJSON?.message.includes('đăng nhập')) {
+                            window.location.href = '/api/auth'; 
+                        } else {
+                            alert('Có lỗi xảy ra: ' + (error.responseJSON?.message || 'Unknown error'));
+                        }
                     }
                 });
             });
         });
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+    document.querySelectorAll('.buy-btn').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            const productId = this.dataset.productId;
+            try {
+                this.disabled = true;
+                this.textContent = 'Đang thêm...';
+
+                const response = await fetch('/api/cart/new', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    this.textContent = 'Đã thêm ✓';
+                    setTimeout(() => {
+                        this.textContent = 'Thêm vào giỏ';
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    if (response.status === 401) {
+                        window.location.href = '/api/auth';
+                    } else {
+                        throw new Error(data.message || 'Failed to add to cart');
+                    }
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                alert(error.message || 'Failed to add to cart');
+                this.textContent = 'Thêm vào giỏ';
+                this.disabled = false;
+            }
+        });
+    });
+});
+    </script>
 </body>
 </html>

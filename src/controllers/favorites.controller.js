@@ -13,12 +13,22 @@ exports.addToWishlist = async (req, res) => {
       throw new Error('Sản phẩm không tồn tại');
     }
 
-    // Sử dụng session để lưu wishlist cho guest
-    req.session.wishlist = req.session.wishlist || [];
-    if (!req.session.wishlist.includes(productId)) {
-      req.session.wishlist.push(productId);
+    // Kiểm tra nếu user chưa đăng nhập
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ message: 'Vui lòng đăng nhập để thêm vào danh sách yêu thích' });
+      // Hoặc nếu dùng render, có thể redirect:
+      // return res.redirect('/auth');
     }
-    return res.json({ message: 'Đã thêm vào danh sách yêu thích (khách)' });
+
+    // Logic cho user đã đăng nhập
+    const user = await User.findById(req.user.id);
+    if (!user.favorites.includes(productId)) {
+      user.favorites.push(productId);
+      await user.save();
+    }
+    return res.json({ message: 'Đã thêm vào danh sách yêu thích' });
   } catch (error) {
     console.error('❌ Lỗi khi thêm vào danh sách yêu thích:', error);
     res.status(500).json({ message: 'Lỗi server: ' + error.message });
@@ -27,10 +37,14 @@ exports.addToWishlist = async (req, res) => {
 
 exports.getWishlist = async (req, res) => {
   try {
-    // Lấy danh sách từ session
-    const wishlist = req.session.wishlist || [];
-    const products = await Product.find({ _id: { $in: wishlist } });
-    return res.render('favorites/index', { products, isGuest: true });
+    // Kiểm tra nếu user chưa đăng nhập
+    if (!req.user) {
+      return res.redirect('/api/auth');
+    }
+    // Logic cho user đã đăng nhập
+    const user = await User.findById(req.user.id).populate('favorites');
+    const products = user.favorites;
+    return res.render('favorites/index', { products, isGuest: false });
   } catch (error) {
     console.error('❌ Lỗi khi tải danh sách yêu thích:', error);
     res.status(500).send('Lỗi server');
@@ -41,10 +55,20 @@ exports.removeFromWishlist = async (req, res) => {
   try {
     const productId = req.params.productId;
 
-    // Sử dụng session để lưu wishlist cho guest
-    req.session.wishlist = req.session.wishlist || [];
-    req.session.wishlist = req.session.wishlist.filter((id) => id.toString() !== productId);
-    return res.json({ message: 'Đã xóa khỏi danh sách yêu thích (khách)' });
+    // Kiểm tra nếu user chưa đăng nhập
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ message: 'Vui lòng đăng nhập để xóa khỏi danh sách yêu thích' });
+      // Hoặc nếu dùng render:
+      // return res.redirect('/auth');
+    }
+
+    // Logic cho user đã đăng nhập
+    const user = await User.findById(req.user.id);
+    user.favorites = user.favorites.filter((id) => id.toString() !== productId);
+    await user.save();
+    return res.json({ message: 'Đã xóa khỏi danh sách yêu thích' });
   } catch (error) {
     console.error('❌ Lỗi khi xóa khỏi danh sách yêu thích:', error);
     res.status(500).json({ message: 'Lỗi server: ' + error.message });

@@ -260,6 +260,8 @@
     </style>
   </head>
   <body>
+    <%- include('../partials/navbar') %>
+
     <div class="container">
       <div class="filter-form">
         <h2>Lọc Sách</h2>
@@ -309,7 +311,7 @@
             </select>
           </div>
         </form>
-        <a href="/api/books" class="btn">Quay về trang chủ</a>
+        <a href="/api/auth/home" class="btn">Quay về trang chủ</a>
       </div>
 
       <div class="content">
@@ -336,6 +338,9 @@
         </div>
       </div>
     </div>
+
+    <%- include('../partials/footerHome') %>
+
 
     <!-- Thêm script xử lý sự kiện -->
     <script>

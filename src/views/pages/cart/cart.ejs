@@ -92,6 +92,12 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .cart-summary[style*="display: block"] {
+            opacity: 1;
         }
 
         .checkout {
@@ -142,6 +148,20 @@
             border-radius: 50%;
             animation: button-loading-spinner 1s linear infinite;
         }
+        .item-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .cart-item {
+            grid-template-columns: auto 120px 1fr auto auto;
+        }
+
+        #checkout-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
 
         @keyframes button-loading-spinner {
             from {
@@ -163,6 +183,14 @@
                 <% carts.forEach(cart => { %>
                     <% total += cart.product.price * cart.quantity %>
                     <div class="cart-item" data-id="<%= cart.product._id %>">
+
+                        <input type="checkbox" 
+                            class="item-checkbox" 
+                            data-price="<%= cart.product.price %>" 
+                            data-quantity="<%= cart.quantity %>"
+                            data-id="<%= cart.product._id %>"
+                        >
+
                         <img src="<%= cart.product.image || '/images/default-book.jpg' %>" 
                              alt="<%= cart.product.name %>">
                         <div class="item-details">
@@ -170,37 +198,82 @@
                             <p class="description"><%= cart.product.description %></p>
                             <p class="price">€ <%= cart.product.price.toFixed(2) %></p>
                             <div class="quantity">
-                                <button onclick="updateQuantity('<%= cart.product._id %>', -1)" 
-                                        <%= cart.quantity <= 1 ? 'disabled' : '' %>>-</button>
+                                <button class="quantity-decrease" data-product-id="<%= cart.product._id %>"
+                                    <%= cart.quantity <= 1 ? 'disabled' : '' %>>
+                                    -
+                                </button>
+
                                 <input type="text" value="<%= cart.quantity %>" readonly>
-                                <button onclick="updateQuantity('<%= cart.product._id %>', 1)"
-                                        <%= cart.quantity >= cart.product.stock ? 'disabled' : '' %>>+</button>
+                                <button class="quantity-increase" data-product-id="<%= cart.product._id %>"
+                                         <%= cart.quantity >= cart.product.stock ? 'disabled' : '' %>>
+                                         +
+                                </button>
                                 <span class="stock">(<%=cart.product.stock%> available)</span>
                             </div>
                         </div>
                         <p class="item-total">€ <%= (cart.product.price * cart.quantity).toFixed(2) %></p>
-                        <button class="remove" onclick="removeItem('<%= cart.product._id %>')">Remove</button>
+                        <button class="remove" data-product-id="<%= cart.product._id %>">Remove</button>
                     </div>
                 <% }) %>
 
-                <div class="cart-summary">
+                <div id="cart-summary-id" class="cart-summary" style="display: none;">
                     <h3>Order Summary</h3>
-                    <p>Subtotal: € <%= total.toFixed(2) %></p>
+                    <p>Selected Items: <span id="selected-count">0</span></p>
+                    <p>Subtotal: € <span id="subtotal">0.00</span></p>
                     <% const shippingCost = 5.00 %>
                     <p>Shipping: € <%= shippingCost.toFixed(2) %></p>
-                    <h3>Total: € <%= (total + shippingCost).toFixed(2) %></h3>
-                    <button class="checkout" onclick="checkout()">Proceed to Checkout</button>
+                    <h3>Total: € <span id="total">0.00</span></h3>
+                    <button class="checkout" id="checkout-btn" disabled>Proceed to Checkout</button>
                 </div>
             <% } else { %>
                 <div class="empty-cart">
                     <h3>Your cart is empty</h3>
-                    <a href="/books">Continue Shopping</a>
+                    <a href="/">Continue Shopping</a>
                 </div>
             <% } %>
         </div>
     </div>
 
     <script>
+            const shipping_cost = 5.0;
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Quantity decrease buttons
+                document.querySelectorAll('.quantity-decrease').forEach(button => {
+                button.addEventListener('click', () => {
+                    updateQuantity(button.dataset.productId, -1);
+                });
+                });
+
+                // Quantity increase buttons
+                document.querySelectorAll('.quantity-increase').forEach(button => {
+                button.addEventListener('click', () => {
+                    updateQuantity(button.dataset.productId, 1);
+                });
+                });
+
+                // Remove buttons
+                document.querySelectorAll('.remove').forEach(button => {
+                button.addEventListener('click', () => {
+                    removeItem(button.dataset.productId);
+                });
+                });
+
+                // Checkout button
+                const checkoutButton = document.querySelector('.checkout');
+                if (checkoutButton) {
+                checkoutButton.addEventListener('click', checkout);
+                }
+                
+                // Handle checkboxes
+                document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', updateTotals);
+                });
+
+                // Initial update
+                updateTotals();
+            });
+
         const setLoading = (button, isLoading) => {
             if (isLoading) {
                 button.classList.add('button-loading');
@@ -229,8 +302,8 @@
         async function updateQuantity(productId, change) {
             const button = event.currentTarget;
             try {
-                // setLoading(button, true);
-                // disableAllButtons();
+                setLoading(button, true);
+                disableAllButtons();
 
                 const response = await fetch('/api/cart/update', {
                     method: 'PUT',
@@ -253,8 +326,8 @@
                 console.error('Error updating quantity:', error);
                 alert('Failed to update quantity');
             } finally {
-                // setLoading(button, false);
-                // enableAllButtons();
+                setLoading(button, false);
+                enableAllButtons();
             }
         }
 
@@ -297,20 +370,28 @@
                 setLoading(button, true);
                 disableAllButtons();
 
+
+                const selectedItems = Array.from(document.querySelectorAll('.item-checkbox:checked')).map(checkbox => checkbox.dataset.id);
+                 
+                if (selectedItems.length === 0) {
+                    alert('Please select items to checkout');
+                    return;
+                }
+
                 const response = await fetch('/api/orders/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        product_ids: Array.from(document.querySelectorAll('.cart-item'))
-                            .map(item => item.dataset.id),
-                        payment_method: 'cash'
+                        product_ids: selectedItems,
+                        payment_method: 'cash',
+                        shipping_cost
                     })
                 });
                 
                 if (response.ok) {
-                    window.location.href = '/orders/history';
+                    window.location.href = '/api/orders/history';
                 } else {
                     const error = await response.json();
                     alert(error.message || 'Failed to create order');
@@ -322,6 +403,35 @@
                 setLoading(button, false);
                 enableAllButtons();
             }
+        }
+        
+        function updateTotals() {
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+            const shippingCost = 5.00;
+            const cartSummary = document.getElementById('cart-summary-id');
+            
+            if(checkboxes.length === 0){
+                cartSummary.style.display ="none";
+                return;
+            }
+
+            let subtotal = 0;
+            const selectedItems = [];
+
+            checkboxes.forEach(checkbox => {
+                const price = parseFloat(checkbox.dataset.price);
+                const quantity = parseInt(checkbox.dataset.quantity);
+                subtotal += price * quantity;
+                selectedItems.push(checkbox.dataset.id);
+            });
+
+            document.getElementById('selected-count').textContent = checkboxes.length;
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('total').textContent = (subtotal + shippingCost).toFixed(2);
+
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.disabled = checkboxes.length === 0;
+            cartSummary.style.display = 'block';
         }
     </script>
 </body>

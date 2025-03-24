@@ -1,0 +1,380 @@
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Book Library</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <link rel="stylesheet" href="/css/jquery-ui.css">
+    <link rel="stylesheet" href="/css/owl.carousel.css">
+    <link rel="stylesheet" href="/css/transitions.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/color.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <style>
+        .tg-sectionhead-content {
+            width: 100%;
+        }
+    
+        .tg-sectionhead h2 {
+            display: flex;
+            flex-wrap: wrap; /* Cho phép xuống dòng nếu cần */
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+            position: relative;
+        }
+    
+        .tg-sectionhead h2 span {
+            display: block; /* Giữ "Latest News & Articles" trên một dòng */
+            font-size: 24px; /* Kích thước chữ tiêu đề */
+            font-weight: bold;
+        }
+    
+        .tg-sectionhead h2::after {
+            content: "What's Hot in The News"; /* Dòng thứ hai của tiêu đề */
+            display: block;
+            font-size: 16px; /* Nhỏ hơn dòng đầu */
+            font-weight: normal;
+            color: #666; /* Màu nhạt hơn để phân cấp */
+        }
+    
+        .tg-create-widget {
+            margin-left: 20px; /* Khoảng cách với nội dung bên trái */
+        }
+    
+        .tg-create-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+    
+        .tg-create-button i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+    
+        .tg-create-button:hover {
+            background-color: #218838;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tg-pagination {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .pagination {
+    margin-bottom: 0;
+  }
+
+  .page-item {
+    margin: 0 5px;
+  }
+
+  .page-link {
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+
+  .page-item.active .page-link {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+
+  .page-link:hover {
+    background-color: #f5f5f5;
+    color: #28a745;
+  }
+
+  .page-item.disabled .page-link {
+    color: #999;
+    cursor: not-allowed;
+    background-color: #fff;
+  }
+    
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tg-sectionhead h2 {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .tg-create-widget {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+    <script src="/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+</head>
+<body>
+
+    <div id="tg-wrapper" class="tg-wrapper tg-haslayout">
+        <!-- Header Start -->
+        <%- include('../partials/header') %>
+        <!-- Header End -->
+
+        <!-- Inner Banner Start -->
+        <div class="tg-innerbanner tg-haslayout tg-parallax tg-bginnerbanner" data-z-index="-100" data-appear-top-offset="600" data-parallax="scroll" data-image-src="/images/parallax/bgparallax-07.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="tg-innerbannercontent">
+                            <h1>News & Articles</h1>
+                            <ol class="tg-breadcrumb">
+                                <li><a href="javascript:void(0);">home</a></li>
+                                <li class="tg-active">News</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Inner Banner End -->
+
+        <!-- Main Start -->
+        <main id="tg-main" class="tg-main tg-haslayout">
+            <!-- News Grid Start -->
+            <div class="tg-sectionspace tg-haslayout">
+                <div class="container">
+                    <div class="row">
+                        <div id="tg-twocolumns" class="tg-twocolumns">
+                            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 pull-right">
+                                <div id="tg-content" class="tg-content">
+                                    <div class="tg-newslist">
+                                        <div class="tg-sectionhead">
+                                            <div class="tg-sectionhead">
+                                                <h2>
+                                                  <span>Latest News &amp; Articles</span>What's Hot in
+                                                  The News
+                                                </h2>
+                                              </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <% articles.forEach(article => { %>
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <article class="tg-post">
+                                                        <figure>
+                                                            <a href="/api/articles/<%= article._id %>">
+                                                                <img class="tg-post-image" src="<%= article.image %>" alt="<%= article.title %>">
+                                                            </a>
+                                                        </figure>
+                                                        <div class="tg-postcontent">
+                                                            <div class="tg-themetagbox"><span class="tg-themetag">featured</span></div>
+                                                            <div class="tg-posttitle">
+                                                                <h3><a href="/api/articles/<%= article._id %>"><%= article.title %></a></h3>
+                                                            </div>
+                                                            <div class="tg-description">
+                                                                <p>
+                                                                  <%- article.content.length > 30 ? truncateContent(article.content, 30) : article.content %>
+                                                                  <a href="/api/articles/<%= article._id %>">More</a>
+                                                                </p>
+                                                              </div>
+                                                              <span class="tg-bookwriter">By: <span>Admin</span></span>
+                                                            <ul class="tg-postmetadata">
+                                                                <li><a href="javascript:void(0);"><i class="fa fa-comment-o"></i><i><%= article.comments.length %></i></a></li>
+                                                                <li><a href="javascript:void(0);"><i class="fa fa-eye"></i><i><%= article.views %></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </article>
+                                                </div>
+                                            <% }) %>
+                                        </div>
+                                        <div class="tg-pagination">
+                                            <nav aria-label="Page navigation">
+                                              <ul class="pagination">
+                                                <% if (hasPrevPage) { %>
+                                                  <li class="page-item">
+                                                    <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" aria-label="Previous">
+                                                      <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                  </li>
+                                                <% } else { %>
+                                                  <li class="page-item disabled">
+                                                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                                                  </li>
+                                                <% } %>
+                                          
+                                                <% for(let i = 1; i <= totalPages; i++) { %>
+                                                  <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                                    <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+                                                  </li>
+                                                <% } %>
+                                          
+                                                <% if (hasNextPage) { %>
+                                                  <li class="page-item">
+                                                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" aria-label="Next">
+                                                      <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                  </li>
+                                                <% } else { %>
+                                                  <li class="page-item disabled">
+                                                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                                                  </li>
+                                                <% } %>
+                                              </ul>
+                                            </nav>
+                                          </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 pull-left">
+                                <aside id="tg-sidebar" class="tg-sidebar">
+                                    <div class="tg-widget tg-widgetsearch">
+                                        <form class="tg-formtheme tg-formsearch">
+                                            <div class="form-group">
+                                                <button type="submit"><i class="icon-magnifier"></i></button>
+                                                <input type="search" name="search" class="form-control" placeholder="Search Here">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    
+                                    <div class="tg-widget tg-widgettrending">
+                                        <div class="tg-widgettitle">
+                                            <h3>Trending Posts</h3>
+                                        </div>
+                                        <div class="tg-widgetcontent">
+                                            <ul>
+                                                <li>
+                                                    <article class="tg-post">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/products/img-04.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-postcontent">
+                                                            <div class="tg-posttitle">
+                                                                <h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+                                                            </div>
+                                                            <span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+                                                        </div>
+                                                    </article>
+                                                </li>
+                                                <li>
+                                                    <article class="tg-post">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/products/img-05.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-postcontent">
+                                                            <div class="tg-posttitle">
+                                                                <h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+                                                            </div>
+                                                            <span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+                                                        </div>
+                                                    </article>
+                                                </li>
+                                                <li>
+                                                    <article class="tg-post">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/products/img-06.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-postcontent">
+                                                            <div class="tg-posttitle">
+                                                                <h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+                                                            </div>
+                                                            <span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+                                                        </div>
+                                                    </article>
+                                                </li>
+                                                <li>
+                                                    <article class="tg-post">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/products/img-07.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-postcontent">
+                                                            <div class="tg-posttitle">
+                                                                <h3><a href="javascript:void(0);">Where The Wild Things Are</a></h3>
+                                                            </div>
+                                                            <span class="tg-bookwriter">By: <a href="javascript:void(0);">Kathrine Culbertson</a></span>
+                                                        </div>
+                                                    </article>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="tg-widget tg-widgetblogers">
+                                        <div class="tg-widgettitle">
+                                            <h3>Top Bloggers</h3>
+                                        </div>
+                                        <div class="tg-widgetcontent">
+                                            <ul>
+                                                <li>
+                                                    <div class="tg-author">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/author/imag-03.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-authorcontent">
+                                                            <h2><a href="javascript:void(0);">Jude Morphew</a></h2>
+                                                            <span>21,658 Published Books</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="tg-author">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/author/imag-03.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-authorcontent">
+                                                            <h2><a href="javascript:void(0);">Jude Morphew</a></h2>
+                                                            <span>21,658 Published Books</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="tg-author">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/author/imag-03.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-authorcontent">
+                                                            <h2><a href="javascript:void(0);">Jude Morphew</a></h2>
+                                                            <span>21,658 Published Books</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="tg-author">
+                                                        <figure><a href="javascript:void(0);"><img src="/images/author/imag-03.jpg" alt="image description"></a></figure>
+                                                        <div class="tg-authorcontent">
+                                                            <h2><a href="javascript:void(0);">Jude Morphew</a></h2>
+                                                            <span>21,658 Published Books</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- News Grid End -->
+        </main>
+        <!-- Main End -->
+
+        <!-- Footer Start -->
+        <%- include('../partials/footer') %>
+        <!-- Footer End -->
+    </div>
+    <!-- Wrapper End -->
+
+    <script src="/js/vendor/jquery-library.js"></script>
+    <script src="/js/vendor/bootstrap.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/jquery.vide.min.js"></script>
+    <script src="/js/countdown.js"></script>
+    <script src="/js/jquery-ui.js"></script>
+    <script src="/js/parallax.js"></script>
+    <script src="/js/countTo.js"></script>
+    <script src="/js/appear.js"></script>
+    <script src="/js/gmap3.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
