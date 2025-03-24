@@ -4,26 +4,60 @@ const User = require('../models/user');
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
 
+  console.log({ token });
+
   if (!token) {
-    // flag req.user as null to differentiate between logged in and logged out users
-    req.user = null;
-    return next();
+    // For page requests, redirect to login
+    const currentUrl = encodeURIComponent(req.originalUrl);
+    return res.redirect(`/api/auth?redirect=${currentUrl}`);
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Decoded token:', decoded);
 
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.id).select('-password').lean();
     if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
+      res.clearCookie('token');
+      throw new AuthenticationError('User not found');
+    }
+
+    console.log('auth', { user });
+
+    // Check token expiration
+    if (Date.now() >= decoded.exp * 1000) {
+      res.clearCookie('token');
+      return res.redirect('/api/auth?message=session_expired');
     }
 
     req.user = user;
+    res.locals.user = user;
+
     next();
   } catch (error) {
     console.error('Token verification error:', error.message);
-    req.user = null;
+    res.clearCookie('token');
+    next();
+  }
+};
+
+const authStoreLocalUser = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return next();
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password').lean();
+
+    if (user) {
+      req.user = user;
+      res.locals.user = user;
+    }
+
+    next();
+  } catch (error) {
+    // Just continue without setting user
     next();
   }
 };
@@ -37,4 +71,4 @@ const checkUserRole = (role) => {
   };
 };
 
-module.exports = { authMiddleware, checkUserRole };
+module.exports = { authMiddleware, checkUserRole, authStoreLocalUser };
