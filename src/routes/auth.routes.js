@@ -7,7 +7,7 @@ const { authMiddleware, checkUserRole } = require('../middleware/auth');
 
 globalAsyncHandler(router);
 
-router.get('/', authController.getLogginForm);
+router.get('/', authController.getLoginForm);
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);

@@ -5,9 +5,12 @@ const axios = require('../../config/axios');
 
 globalAsyncHandler(router);
 
+router.get('/', (req, res) => {
+  res.redirect('/api/auth/home');
+});
+
 router.get('/cart', async (req, res) => {
   const { data } = await axios.get('/cart/products');
-  // console.log({ carts: data.cart });
   res.render('pages/cart/cart', {
     title: 'Cart',
     user: req.user,
