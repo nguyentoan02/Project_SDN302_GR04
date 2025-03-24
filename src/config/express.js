@@ -57,8 +57,8 @@ app.use(
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts
       styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles
-      imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'"],
+      imgSrc: ["'self'", 'data:', 'https:', 'http:'],
+      connectSrc: ["'self'", 'http:', 'https:'],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
