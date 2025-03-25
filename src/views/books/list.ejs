@@ -312,7 +312,8 @@
                 const response = await fetch('/api/cart/new', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         product_id: productId,
@@ -324,10 +325,6 @@
                 
                 if (response.ok) {
                     this.textContent = 'Đã thêm ✓';
-                    setTimeout(() => {
-                        this.textContent = 'Thêm vào giỏ';
-                        this.disabled = false;
-                    }, 2000);
                 } else {
                     if (response.status === 401) {
                         window.location.href = '/api/auth';
@@ -335,11 +332,21 @@
                         throw new Error(data.message || 'Failed to add to cart');
                     }
                 }
+
             } catch (error) {
-                console.error('Error adding to cart:', error);
+        
+                if (error.message.includes('Authentication failed') || 
+                    error.message.includes('Please login')) {
+                    window.location.href = `/api/auth?redirect=${currentPath}`;
+                    return;
+                }
                 alert(error.message || 'Failed to add to cart');
-                this.textContent = 'Thêm vào giỏ';
-                this.disabled = false;
+            
+            }finally {
+                setTimeout(() => {
+                        this.textContent = 'Thêm vào giỏ';
+                        this.disabled = false;
+                }, 1000);
             }
         });
     });
