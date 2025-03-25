@@ -21,7 +21,11 @@ class AuthController {
 
   async getLoginForm(req, res) {
     const { redirect, message } = req.query;
-    res.render('auth/login');
+    res.render('auth/login', {
+      title: 'Login',
+      redirect: redirect || '/',
+      message: message || ''
+    });
   }
 
   async register(req, res) {
@@ -87,7 +91,7 @@ class AuthController {
       res.status(HTTP_STATUS.OK).json({
         message: MESSAGES.SUCCESS,
         data: {
-          id: req.user.id,
+          id: req.user._id,
           username: req.user.username,
           role: req.user.role
         }
@@ -131,7 +135,7 @@ class AuthController {
   async updateProfile(req, res) {
     try {
       const { fullname, address, dateOfBirth, gender, avatar } = req.body;
-      const result = await AuthService.updateProfile(req.user.id, {
+      const result = await AuthService.updateProfile(req.user._id, {
         fullname,
         address,
         dateOfBirth,

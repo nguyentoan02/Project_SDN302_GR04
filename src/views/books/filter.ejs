@@ -231,7 +231,7 @@
                         <span class="book-price"><%= new Intl.NumberFormat('vi-VN').format(book.price) %>đ</span>
                         <span class="book-stock"><%= book.stock > 0 ? 'In Stock' : 'Out of Stock' %></span>
                         <div class="book-actions">
-                            <button class="add-to-cart" <%= book.stock === 0 ? 'disabled' : '' %>>Thêm vào giỏ</button>
+                            <button class="add-to-cart" data-product-id = <%= book._id %> <%= book.stock === 0 ? 'disabled' : '' %>>Thêm vào giỏ</button>
                         </div>
                     </li>
                 <% }) %>
@@ -272,8 +272,61 @@
           });
       });
   </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+                const addToCartBtns = document.querySelectorAll('.add-to-cart');
+
+                addToCartBtns.forEach(button => {
+                    button.addEventListener('click', async function() {
+                        const productId = this.dataset.productId;
+                        
+                        try {
+                            this.disabled = true;
+                            const originalText = this.innerHTML;
+                            this.innerHTML = 'Đang xử lý...';
+                    
+                            const response = await fetch('/api/cart/new', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    product_id: productId,
+                                    quantity: 1
+                                })
+                            });
+                    
+                            const data = await response.json();
+                    
+                            if (response.ok) {
+                                this.innerHTML = 'Đã thêm vào giỏ';
+                                this.classList.remove('btn-success');
+                                this.classList.add('btn-secondary');
+                                
+                
+                            
+                            } else {
+                                if (response.status === 401) {
+                                    const currentPath = encodeURIComponent(window.location.pathname);
+                                    window.location.href = `/api/auth?redirect=${currentPath}`;
+                                    return;
+                                }
+                                throw new Error(data.message || 'Failed to add to cart');
+                            }
+                        } catch (error) {
+                            console.error('Error adding to cart:', error);
+                            alert(error.message || 'Failed to add to cart');
+                        } 
+                    });
+                });
+            });
+    </script>
+
+ 
   
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>

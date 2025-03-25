@@ -23,8 +23,8 @@ exports.addToWishlist = async (req, res) => {
     }
 
     // Logic cho user đã đăng nhập
-    const user = await User.findById(req.user.id);
-    if (!user.favorites.includes(productId)) {
+    const user = await User.findById(req.user._id);
+    if (!user?.favorites?.includes(productId)) {
       user.favorites.push(productId);
       await user.save();
     }
@@ -42,7 +42,7 @@ exports.getWishlist = async (req, res) => {
       return res.redirect('/api/auth');
     }
     // Logic cho user đã đăng nhập
-    const user = await User.findById(req.user.id).populate('favorites');
+    const user = await User.findById(req.user?._id).populate('favorites');
     const products = user.favorites;
     return res.render('favorites/index', { products, isGuest: false });
   } catch (error) {
@@ -65,7 +65,7 @@ exports.removeFromWishlist = async (req, res) => {
     }
 
     // Logic cho user đã đăng nhập
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
     user.favorites = user.favorites.filter((id) => id.toString() !== productId);
     await user.save();
     return res.json({ message: 'Đã xóa khỏi danh sách yêu thích' });

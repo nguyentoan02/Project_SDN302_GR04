@@ -174,6 +174,9 @@
     </style>
 </head>
 <body>
+    <header>
+        <%- include('../../partials/navbar') %>
+    </header>
     <div class="cart-container">
         <h2>Shopping Cart</h2>
         
@@ -233,206 +236,212 @@
             <% } %>
         </div>
     </div>
+</body>
 
-    <script>
-            const shipping_cost = 5.0;
+</html>
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // Quantity decrease buttons
-                document.querySelectorAll('.quantity-decrease').forEach(button => {
-                button.addEventListener('click', () => {
-                    updateQuantity(button.dataset.productId, -1);
-                });
-                });
+<script>
+    const shipping_cost = 5.0;
 
-                // Quantity increase buttons
-                document.querySelectorAll('.quantity-increase').forEach(button => {
-                button.addEventListener('click', () => {
-                    updateQuantity(button.dataset.productId, 1);
-                });
-                });
+    document.addEventListener('DOMContentLoaded', () => {
+        // Quantity decrease buttons
+        document.querySelectorAll('.quantity-decrease').forEach(button => {
+        button.addEventListener('click', () => {
+            updateQuantity(button.dataset.productId, -1);
+        });
+        });
 
-                // Remove buttons
-                document.querySelectorAll('.remove').forEach(button => {
-                button.addEventListener('click', () => {
-                    removeItem(button.dataset.productId);
-                });
-                });
+        // Quantity increase buttons
+        document.querySelectorAll('.quantity-increase').forEach(button => {
+        button.addEventListener('click', () => {
+            updateQuantity(button.dataset.productId, 1);
+        });
+        });
 
-                // Checkout button
-                const checkoutButton = document.querySelector('.checkout');
-                if (checkoutButton) {
-                checkoutButton.addEventListener('click', checkout);
-                }
-                
-                // Handle checkboxes
-                document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                    checkbox.addEventListener('change', updateTotals);
-                });
+        // Remove buttons
+        document.querySelectorAll('.remove').forEach(button => {
+        button.addEventListener('click', () => {
+            removeItem(button.dataset.productId);
+        });
+        });
 
-                // Initial update
-                updateTotals();
-            });
-
-        const setLoading = (button, isLoading) => {
-            if (isLoading) {
-                button.classList.add('button-loading');
-                button.disabled = true;
-                button.textContent = '';
-            } else {
-                button.classList.remove('button-loading');
-                button.disabled = false;
-                button.textContent = button.dataset.originalText;
-            }
-        };
-
-        const disableAllButtons = () => {
-            document.querySelectorAll('button').forEach(button => {
-                button.dataset.originalText = button.textContent;
-                button.disabled = true;
-            });
-        };
-
-        const enableAllButtons = () => {
-            document.querySelectorAll('button').forEach(button => {
-                button.disabled = false;
-            });
-        };
-
-        async function updateQuantity(productId, change) {
-            const button = event.currentTarget;
-            try {
-                setLoading(button, true);
-                disableAllButtons();
-
-                const response = await fetch('/api/cart/update', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: change
-                    })
-                });
-                
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    const error = await response.json();
-                    alert(error.message || 'Failed to update quantity');
-                }
-            } catch (error) {
-                console.error('Error updating quantity:', error);
-                alert('Failed to update quantity');
-            } finally {
-                setLoading(button, false);
-                enableAllButtons();
-            }
-        }
-
-        async function removeItem(productId) {
-            const button = event.currentTarget;
-            if (!confirm('Are you sure you want to remove this item?')) return;
-            
-            try {
-                setLoading(button, true);
-                disableAllButtons();
-
-                const response = await fetch('/api/cart/remove', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_id: productId
-                    })
-                });
-                
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    const error = await response.json();
-                    alert(error.message || 'Failed to remove item');
-                }
-            } catch (error) {
-                console.error('Error removing item:', error);
-                alert('Failed to remove item');
-            } finally {
-                setLoading(button, false);
-                enableAllButtons();
-            }
-        }
-
-        async function checkout() {
-            const button = event.currentTarget;
-            try {
-                setLoading(button, true);
-                disableAllButtons();
-
-
-                const selectedItems = Array.from(document.querySelectorAll('.item-checkbox:checked')).map(checkbox => checkbox.dataset.id);
-                 
-                if (selectedItems.length === 0) {
-                    alert('Please select items to checkout');
-                    return;
-                }
-
-                const response = await fetch('/api/orders/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_ids: selectedItems,
-                        payment_method: 'cash',
-                        shipping_cost
-                    })
-                });
-                
-                if (response.ok) {
-                    window.location.href = '/api/orders/history';
-                } else {
-                    const error = await response.json();
-                    alert(error.message || 'Failed to create order');
-                }
-            } catch (error) {
-                console.error('Error creating order:', error);
-                alert('Failed to create order');
-            } finally {
-                setLoading(button, false);
-                enableAllButtons();
-            }
+        // Checkout button
+        const checkoutButton = document.querySelector('.checkout');
+        if (checkoutButton) {
+        checkoutButton.addEventListener('click', checkout);
         }
         
-        function updateTotals() {
-            const checkboxes = document.querySelectorAll('.item-checkbox:checked');
-            const shippingCost = 5.00;
-            const cartSummary = document.getElementById('cart-summary-id');
-            
-            if(checkboxes.length === 0){
-                cartSummary.style.display ="none";
-                return;
-            }
+        // Handle checkboxes
+        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTotals);
+        });
 
-            let subtotal = 0;
-            const selectedItems = [];
+        // Initial update
+        updateTotals();
+    });
 
-            checkboxes.forEach(checkbox => {
-                const price = parseFloat(checkbox.dataset.price);
-                const quantity = parseInt(checkbox.dataset.quantity);
-                subtotal += price * quantity;
-                selectedItems.push(checkbox.dataset.id);
-            });
+const setLoading = (button, isLoading) => {
+    if (isLoading) {
+        button.classList.add('button-loading');
+        button.disabled = true;
+        button.textContent = '';
+    } else {
+        button.classList.remove('button-loading');
+        button.disabled = false;
+        button.textContent = button.dataset.originalText;
+    }
+};
 
-            document.getElementById('selected-count').textContent = checkboxes.length;
-            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-            document.getElementById('total').textContent = (subtotal + shippingCost).toFixed(2);
+const disableAllButtons = () => {
+    document.querySelectorAll('button').forEach(button => {
+        button.dataset.originalText = button.textContent;
+        button.disabled = true;
+    });
+};
 
-            const checkoutBtn = document.getElementById('checkout-btn');
-            checkoutBtn.disabled = checkboxes.length === 0;
-            cartSummary.style.display = 'block';
+const enableAllButtons = () => {
+    document.querySelectorAll('button').forEach(button => {
+        button.disabled = false;
+    });
+};
+
+async function updateQuantity(productId, change) {
+    const button = event.currentTarget;
+    try {
+        setLoading(button, true);
+        disableAllButtons();
+
+        const response = await fetch('/api/cart/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: change
+            })
+        });
+        
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            const error = await response.json();
+            alert(error.message || 'Failed to update quantity');
         }
-    </script>
-</body>
-</html>
+    } catch (error) {
+        console.error('Error updating quantity:', error);
+        alert('Failed to update quantity');
+    } finally {
+        setLoading(button, false);
+        enableAllButtons();
+    }
+}
+
+async function removeItem(productId) {
+    const button = event.currentTarget;
+    if (!confirm('Are you sure you want to remove this item?')) return;
+    
+    try {
+        setLoading(button, true);
+        disableAllButtons();
+        
+        const cartItem = button.closest('.cart-item');
+        const quantityInput = cartItem.querySelector('input[type="text"]');
+        const quantity = parseInt(quantityInput.value, 10);
+
+        const response = await fetch('/api/cart/remove', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity,
+            })
+        });
+        
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            const error = await response.json();
+            alert(error.message || 'Failed to remove item');
+        }
+    } catch (error) {
+        console.error('Error removing item:', error);
+        alert('Failed to remove item');
+    } finally {
+        setLoading(button, false);
+        enableAllButtons();
+    }
+}
+
+async function checkout() {
+    const button = event.currentTarget;
+    try {
+        setLoading(button, true);
+        disableAllButtons();
+
+
+        const selectedItems = Array.from(document.querySelectorAll('.item-checkbox:checked')).map(checkbox => checkbox.dataset.id);
+         
+        if (selectedItems.length === 0) {
+            alert('Please select items to checkout');
+            return;
+        }
+
+        const response = await fetch('/api/orders/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                product_ids: selectedItems,
+                payment_method: 'cash',
+                shipping_cost
+            })
+        });
+        
+        if (response.ok) {
+            window.location.href = '/api/orders/history';
+        } else {
+            const error = await response.json();
+            alert(error.message || 'Failed to create order');
+        }
+    } catch (error) {
+        console.error('Error creating order:', error);
+        alert('Failed to create order');
+    } finally {
+        setLoading(button, false);
+        enableAllButtons();
+    }
+}
+
+function updateTotals() {
+    const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+    const shippingCost = 5.00;
+    const cartSummary = document.getElementById('cart-summary-id');
+    
+    if(checkboxes.length === 0){
+        cartSummary.style.display ="none";
+        return;
+    }
+
+    let subtotal = 0;
+    const selectedItems = [];
+
+    checkboxes.forEach(checkbox => {
+        const price = parseFloat(checkbox.dataset.price);
+        const quantity = parseInt(checkbox.dataset.quantity);
+        subtotal += price * quantity;
+        selectedItems.push(checkbox.dataset.id);
+    });
+
+    document.getElementById('selected-count').textContent = checkboxes.length;
+    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+    document.getElementById('total').textContent = (subtotal + shippingCost).toFixed(2);
+
+    const checkoutBtn = document.getElementById('checkout-btn');
+    checkoutBtn.disabled = checkboxes.length === 0;
+    cartSummary.style.display = 'block';
+}
+</script>

@@ -3,30 +3,51 @@ const User = require('../models/user');
 
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
-
-  console.log({ token });
+  const isApiRequest = req.xhr || req.headers.accept?.includes('application/json');
+  const currentPath = encodeURIComponent(req.originalUrl);
 
   if (!token) {
+    // For API request
+    if (isApiRequest) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Please login to continue',
+        redirect: `/api/auth?redirect=${currentPath}`
+      });
+    }
     // For page requests, redirect to login
-    const currentUrl = encodeURIComponent(req.originalUrl);
-    return res.redirect(`/api/auth?redirect=${currentUrl}`);
+    return res.redirect(`/api/auth?redirect=${currentPath}`);
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.id).select('-password').lean();
+
+    // Check if user exists
     if (!user) {
       res.clearCookie('token');
-      throw new AuthenticationError('User not found');
+      if (isApiRequest) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'User not found',
+          redirect: `/api/auth?redirect=${currentPath}`
+        });
+      }
+      return res.redirect(`/api/auth?redirect=${currentPath}`);
     }
-
-    console.log('auth', { user });
 
     // Check token expiration
     if (Date.now() >= decoded.exp * 1000) {
       res.clearCookie('token');
-      return res.redirect('/api/auth?message=session_expired');
+      if (isApiRequest) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'Session expired',
+          redirect: `/api/auth?redirect=${currentPath}`
+        });
+      }
+      return res.redirect(`/api/auth?message=session_expired&redirect=${currentPath}`);
     }
 
     req.user = user;
@@ -36,7 +57,15 @@ const authMiddleware = async (req, res, next) => {
   } catch (error) {
     console.error('Token verification error:', error.message);
     res.clearCookie('token');
-    next();
+
+    if (isApiRequest) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Authentication failed',
+        redirect: `/api/auth?redirect=${currentPath}`
+      });
+    }
+    return res.redirect(`/api/auth?redirect=${currentPath}`);
   }
 };
 
@@ -58,6 +87,7 @@ const authStoreLocalUser = async (req, res, next) => {
     next();
   } catch (error) {
     // Just continue without setting user
+    console.log(error);
     next();
   }
 };
