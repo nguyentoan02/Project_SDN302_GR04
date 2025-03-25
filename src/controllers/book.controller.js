@@ -6,7 +6,7 @@ const User = require('../models/user');
 exports.listBooks = async (req, res) => {
   try {
     const books = await Product.find();
-    res.render('books/index', { books, name: '' }); // Truyền thêm name
+    res.render('books/list', { books, name: '' }); // Truyền thêm name
   } catch (error) {
     res.status(500).send('Lỗi khi tải danh sách sách');
   }
@@ -20,9 +20,9 @@ exports.filterBooks = async (req, res) => {
 
     if (name) {
       name = name.trim(); // Xóa khoảng trắng đầu/cuối
-      const nameNormalized = removeAccents(name).toLowerCase(); // Bỏ dấu, chuyển thành chữ thường
+      const nameNormalized = removeAccents(name).toLowerCase();
 
-      books = await Product.find({}).lean(); // Lấy toàn bộ sách trước
+      books = await Product.find({}).lean();
 
       // Lọc sách theo điều kiện
       books = books.filter((book) => {
@@ -41,21 +41,25 @@ exports.filterBooks = async (req, res) => {
 // Xem chi tiết sách - Đã chỉnh sửa để thêm allBooks
 exports.bookDetail = async (req, res) => {
   try {
-    const book = await Product.findOne({ slug: req.params.slug });
+    const book = await Product.findOne({ slug: req.params.slug }).populate({
+      path: 'reviews',
+      populate: { path: 'userId', select: 'username' }
+    });
+
     if (!book) {
       return res.status(404).send('Không tìm thấy sách');
     }
 
-    // Lấy tất cả sách từ database (trừ sách hiện tại nếu cần)
-    const allBooks = await Product.find({ _id: { $ne: book._id } }); // Loại trừ sách hiện tại
+    const allBooks = await Product.find({ _id: { $ne: book._id } });
 
-    res.render('books/detail', { book, allBooks });
+    const reviews = book.reviews || [];
+
+    res.render('books/detail', { book, allBooks, reviews });
   } catch (error) {
     console.error('❌ Lỗi khi tải chi tiết sách:', error);
     res.status(500).send('Lỗi server');
   }
 };
-
 // Lọc sách theo các tiêu chí (tác giả, thể loại, quốc gia, giá tiền)
 exports.filterByAll = async (req, res) => {
   try {
