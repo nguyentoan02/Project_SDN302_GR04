@@ -108,6 +108,10 @@
 
     <!-- Logic API login và register trong script -->
     <script>
+      window.APP_CONFIG = {
+        API_URL: '<%= apiUrl %>'
+      };
+
       document.addEventListener('DOMContentLoaded', () => {
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
@@ -118,7 +122,7 @@
         const registerPasswordRef = document.getElementById('registerPassword');
         const confirmPasswordRef = document.getElementById('confirmPassword');
 
-        const API_URL = '/api/auth';
+        const API_URL = window.APP_CONFIG.API_URL + '/auth';
 
         // Xử lý submit login form
         loginForm.addEventListener('submit', async (e) => {
