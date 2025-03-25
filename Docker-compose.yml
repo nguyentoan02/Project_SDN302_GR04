@@ -12,11 +12,12 @@ services:
       - PORT=3000
       - JWT_SECRET=ffgsdfsk234ls@gknfd
       - JWT_EXPIRES_IN=1h
-      - BASE_API=http://localhost:3000/api
+      - BASE_API=http://46.137.195.183:3000/api
       - CLOUDINARY_CLOUD_NAME=dab4uej6j
       - CLOUDINARY_API_KEY=667986783747544
       - CLOUDINARY_API_SECRET=NQcmA_0J7CwTSJ6Jp-asOJnQA5A
-      - NODE_ENV = production
+      - NODE_ENV=production
+      - HOST=0.0.0.0
     networks:
       - my_network
     restart: always
