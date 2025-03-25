@@ -5,7 +5,9 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . . 
 
-ENV HOST=0.0.0.0
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOST=46.137.195.183
 
 COPY public ./public
 
@@ -13,6 +15,5 @@ COPY public ./public
 FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder /app /app
-ENV NODE_ENV=production
 EXPOSE 3000
 CMD ["node", "src/app.js"]
