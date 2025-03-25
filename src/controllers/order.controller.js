@@ -79,10 +79,6 @@ class OrderController {
       .sort({ orderDate: -1 })
       .lean();
 
-    if (!orders.length) {
-      throw new NotFoundError('No orders found');
-    }
-
     return res.render('pages/order/orderHistory', {
       title: 'Order History',
       user: req.user,
