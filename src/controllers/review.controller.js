@@ -22,7 +22,7 @@ exports.createReview = async (req, res, next) => {
     const reviewData = {
       ...req.body,
       productId: book._id,
-      userId: req.user.id
+      userId: req.user._id
     };
 
     const review = await reviewService.createReview(reviewData);
@@ -52,12 +52,16 @@ exports.updateReview = async (req, res, next) => {
     }
 
     // Check if the current user is the review's creator
-    if (review.userId.toString() !== req.user.id) {
-      return res.status(403).json({ status: 'error', message: 'Bạn không có quyền sửa đánh giá này' });
+    if (review.userId.toString() !== req.user._id) {
+      return res
+        .status(403)
+        .json({ status: 'error', message: 'Bạn không có quyền sửa đánh giá này' });
     }
 
     const updatedReview = await reviewService.updateReview(req.params.id, req.body);
-    res.status(200).json({ success: true, message: 'Đánh giá đã được cập nhật!', data: updatedReview });
+    res
+      .status(200)
+      .json({ success: true, message: 'Đánh giá đã được cập nhật!', data: updatedReview });
   } catch (error) {
     next(error);
   }
@@ -78,8 +82,10 @@ exports.deleteReview = async (req, res, next) => {
     }
 
     // Check if the current user is the review's creator
-    if (review.userId.toString() !== req.user.id) {
-      return res.status(403).json({ status: 'error', message: 'Bạn không có quyền xóa đánh giá này' });
+    if (review.userId.toString() !== req.user._id) {
+      return res
+        .status(403)
+        .json({ status: 'error', message: 'Bạn không có quyền xóa đánh giá này' });
     }
 
     await reviewService.deleteReview(req.params.id);

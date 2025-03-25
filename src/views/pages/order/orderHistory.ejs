@@ -100,9 +100,10 @@
     </style>
 </head>
 <body>
+    <header>
+        <%- include('../../partials/navbar') %>
+    </header>
     <div class="order-container">
-        <h2>Order History</h2>
-
         <div class="order-list">
             <% if (orders && orders.length > 0) { %>
                 <% orders.forEach(order => { %>
@@ -150,10 +151,14 @@
                 <div class="empty-orders">
                     <h3>No orders found</h3>
                     <p>You haven't placed any orders yet.</p>
-                    <a href="/books">Start Shopping</a>
+                    <a href="/">Start Shopping</a>
                 </div>
             <% } %>
         </div>
     </div>
+   
 </body>
+<footer>
+    <%- include('../../partials/footerHome.ejs') %>
+</footer>
 </html>

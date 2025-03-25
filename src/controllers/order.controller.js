@@ -5,7 +5,7 @@ const { SuccessResponse } = require('../core/success');
 
 class OrderController {
   async createOrderFromSelectedProducts(req, res) {
-    const { product_ids, payment_method } = req.body;
+    const { product_ids, payment_method, shipping_cost } = req.body;
 
     if (!Array.isArray(product_ids) || product_ids.length === 0) {
       throw new BadRequest('Please select products to order');
@@ -40,7 +40,7 @@ class OrderController {
     const order = new Order({
       userId,
       products: orderProducts,
-      totalAmount,
+      totalAmount: totalAmount + (shipping_cost || 0),
       paymentMethod: payment_method
     });
 
@@ -76,13 +76,14 @@ class OrderController {
     const orders = await Order.find({ userId })
       .populate('products.productId')
       .populate('userId', 'username email')
-      .sort({ orderDate: -1 });
+      .sort({ orderDate: -1 })
+      .lean();
 
-    if (!orders.length) {
-      throw new NotFoundError('No orders found');
-    }
-
-    return SuccessResponse.ok(res, orders, 'Orders retrieved successfully');
+    return res.render('pages/order/orderHistory', {
+      title: 'Order History',
+      user: req.user,
+      orders: orders || []
+    });
   }
 
   async getOrderById(req, res) {

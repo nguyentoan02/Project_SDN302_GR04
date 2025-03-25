@@ -130,7 +130,7 @@ exports.createArticle = async (req, res, next) => {
     const articleParam = {
       title: title || '',
       content: cleanContent,
-      createdBy: req.user.id
+      createdBy: req.user._id
     };
 
     // Handle image upload if provided
@@ -277,7 +277,7 @@ exports.addComment = async (req, res, next) => {
 
     const commentParam = {
       content: commentContent,
-      author: req.user.id,
+      author: req.user._id,
       createdAt: new Date()
     };
 

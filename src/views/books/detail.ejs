@@ -396,7 +396,7 @@
                   <a href="#" class="btn btn-secondary mt-3 w-100 disabled">Hết hàng</a>
                   <a href="/api/favorites" class="btn btn-secondary mt-2 w-100">📜 Xem danh sách yêu thích</a>
                 <% } else { %>
-                    <a href="#" class="btn btn-success mt-3 w-100">🛒 Thêm vào giỏ hàng</a>
+                    <button  class="btn-add-to-cart btn btn-success mt-3 w-100">🛒 Thêm vào giỏ hàng</button>
                 <% } %>
                 <a href="/api/favorites" class="btn btn-secondary mt-2 w-100">📜 Xem danh sách yêu thích</a>
             </div>
@@ -546,6 +546,82 @@
     alert('Lỗi gửi đánh giá: ' + error.message);
   });
 });
+    </script>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+            const addToCartBtn = document.querySelector('.btn-add-to-cart');
+            const quantityInput = document.getElementById('quantity');
+        
+            addToCartBtn.addEventListener('click', async function() {
+                try {
+                    // Get the current quantity
+                    const quantity = parseInt(quantityInput.value, 10);
+                    const maxStock = <%= book.stock %>;
+        
+                    // Validate quantity
+                    if (isNaN(quantity) || quantity < 1) {
+                        alert('Please enter a valid quantity');
+                        return;
+                    }
+        
+                    if (quantity > maxStock) {
+                        alert(`Only ${maxStock} items available in stock`);
+                        return;
+                    }
+        
+                    // Show loading state
+                    this.disabled = true;
+                    const originalText = this.innerHTML;
+                    this.innerHTML = 'Đang xử lý...';
+        
+                    const response = await fetch('/api/cart/new', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            product_id: '<%= book._id %>',
+                            quantity: quantity
+                        })
+                    });
+        
+                    const data = await response.json();
+        
+                    if (response.ok) {
+                        // Show success state
+                        this.innerHTML = 'Đã thêm vào giỏ';
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-secondary');
+        
+                        // Reset after 2 seconds
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.classList.remove('btn-secondary');
+                            this.classList.add('btn-success');
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        if (response.status === 401) {
+                            // Save current URL for redirect back after login
+                            const currentPath = encodeURIComponent(window.location.pathname);
+                            window.location.href = `/api/auth?redirect=${currentPath}`;
+                            return;
+                        }
+                        throw new Error(data.message || 'Failed to add to cart');
+                    }
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    alert(error.message || 'Failed to add to cart');
+                }finally {
+                    this.disabled = false;
+                    this.innerHTML = originalText;
+                }
+            });
+        });
     </script>
 </body>
 </html>

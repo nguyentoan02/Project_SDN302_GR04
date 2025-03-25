@@ -6,8 +6,8 @@ class AuthController {
 
   async home(req, res) {
     try {
-      const books = await Product.find(); // Lấy tất cả sách từ MongoDB
-      res.render('pages/home', { books, name: '' }); // Truyền books và name
+      const books = await Product.find().lean(); // Lấy tất cả sách từ MongoDB
+      res.render('pages/home', { title: 'Home', books, name: '' }); // Truyền books và name
     } catch (error) {
       console.error('❌ Lỗi khi tải trang chủ:', error);
       res.status(500).send('Lỗi server');
@@ -19,8 +19,13 @@ class AuthController {
     res.render('pages/dashboard', { user: req.user }); // Truyền req.user
   }
 
-  async getLogginForm(req, res) {
-    res.render('auth/login');
+  async getLoginForm(req, res) {
+    const { redirect, message } = req.query;
+    res.render('auth/login', {
+      title: 'Login',
+      redirect: redirect || '/',
+      message: message || ''
+    });
   }
 
   async register(req, res) {
@@ -86,7 +91,7 @@ class AuthController {
       res.status(HTTP_STATUS.OK).json({
         message: MESSAGES.SUCCESS,
         data: {
-          id: req.user.id,
+          id: req.user._id,
           username: req.user.username,
           role: req.user.role
         }
@@ -130,7 +135,7 @@ class AuthController {
   async updateProfile(req, res) {
     try {
       const { fullname, address, dateOfBirth, gender, avatar } = req.body;
-      const result = await AuthService.updateProfile(req.user.id, {
+      const result = await AuthService.updateProfile(req.user._id, {
         fullname,
         address,
         dateOfBirth,

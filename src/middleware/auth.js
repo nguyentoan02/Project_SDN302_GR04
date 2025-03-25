@@ -3,27 +3,91 @@ const User = require('../models/user');
 
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
+  const isApiRequest = req.xhr || req.headers.accept?.includes('application/json');
+  const currentPath = encodeURIComponent(req.originalUrl);
 
   if (!token) {
-    // flag req.user as null to differentiate between logged in and logged out users
-    req.user = null;
-    return next();
+    // For API request
+    if (isApiRequest) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Please login to continue',
+        redirect: `/api/auth?redirect=${currentPath}`
+      });
+    }
+    // For page requests, redirect to login
+    return res.redirect(`/api/auth?redirect=${currentPath}`);
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Decoded token:', decoded);
 
-    const user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.id).select('-password').lean();
+
+    // Check if user exists
     if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
+      res.clearCookie('token');
+      if (isApiRequest) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'User not found',
+          redirect: `/api/auth?redirect=${currentPath}`
+        });
+      }
+      return res.redirect(`/api/auth?redirect=${currentPath}`);
+    }
+
+    // Check token expiration
+    if (Date.now() >= decoded.exp * 1000) {
+      res.clearCookie('token');
+      if (isApiRequest) {
+        return res.status(401).json({
+          status: 'error',
+          message: 'Session expired',
+          redirect: `/api/auth?redirect=${currentPath}`
+        });
+      }
+      return res.redirect(`/api/auth?message=session_expired&redirect=${currentPath}`);
     }
 
     req.user = user;
+    res.locals.user = user;
+
     next();
   } catch (error) {
     console.error('Token verification error:', error.message);
-    req.user = null;
+    res.clearCookie('token');
+
+    if (isApiRequest) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Authentication failed',
+        redirect: `/api/auth?redirect=${currentPath}`
+      });
+    }
+    return res.redirect(`/api/auth?redirect=${currentPath}`);
+  }
+};
+
+const authStoreLocalUser = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return next();
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password').lean();
+
+    if (user) {
+      req.user = user;
+      res.locals.user = user;
+    }
+
+    next();
+  } catch (error) {
+    // Just continue without setting user
+    console.log(error);
     next();
   }
 };
@@ -37,4 +101,4 @@ const checkUserRole = (role) => {
   };
 };
 
-module.exports = { authMiddleware, checkUserRole };
+module.exports = { authMiddleware, checkUserRole, authStoreLocalUser };

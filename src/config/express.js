@@ -12,11 +12,16 @@ const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const helper = require('../utils/helper');
-const flash = require('connect-flash');
-const jwt = require('jsonwebtoken');
 const session = require('express-session');
+const { authStoreLocalUser } = require('../middleware/auth');
+const { corsOptions } = require('./cors');
+const { helmetConfig } = require('./helmet');
+const { sessionConfig } = require('./session');
+const { apiUrl } = require('./core');
 
 const app = express();
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 app.use(methodOverride('_method'));
 
@@ -28,61 +33,30 @@ app.set('views', path.join(__dirname, '../views'));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../../public')));
-
-app.use(cookieParser());
-
-app.use((req, res, next) => {
-  const token = req.cookies.token;
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secure-secret-key');
-      req.user = decoded;
-    } catch (err) {
-      req.user = null;
-    }
-  } else {
-    req.user = null;
-  }
-  res.locals.user = req.user; // Gán vào res.locals để dùng trong template
-  next();
-});
-
-app.use(
-  session({
-    secret: 'your-secure-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.DATABASE_URL,
-      ttl: 24 * 60 * 60
-    }),
-    cookie: {
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000
-    }
-  })
-);
 // Middleware
+app.use(cookieParser());
+app.use(compression());
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      'default-src': ["'self'"],
-      'img-src': ['*'],
-      'script-src': ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net']
-    },
-    contentSecurityPolicy: false
-  })
-);
+
+app.use(session(sessionConfig));
+
+app.use(cors(corsOptions));
+
+app.use(helmet(helmetConfig));
+
+app.use(authStoreLocalUser);
+
 app.use((req, res, next) => {
   console.log('Middleware 1: Request received:', req.method, req.url);
+  // res.locals.API_URL = config.API_URL;
+  res.locals.NODE_ENV = process.env.NODE_ENV;
+  res.locals.apiUrl = apiUrl;
+  console.log(res.locals.apiUrl);
   res.locals.truncateContent = helper.truncateContent;
   next();
 });
-app.use(compression());
-app.use(morgan('dev'));
 
 app.use(successHandler);
 
