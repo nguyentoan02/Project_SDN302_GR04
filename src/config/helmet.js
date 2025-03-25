@@ -104,4 +104,44 @@ const helmetConfig = {
   xssFilter: true // Enable built-in XSS filter
 };
 
-module.exports = { helmetConfig };
+//Helmet config for HTTP version
+const helmetConfigHTTP = {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        'https://cdn.jsdelivr.net',
+        'http://46.137.195.183:3000',
+        'https://fonts.googleapis.com'
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        'https://cdn.jsdelivr.net',
+        'https://fonts.googleapis.com',
+        'https://fonts.gstatic.com'
+      ],
+      imgSrc: ["'self'", 'data:', 'http:', 'https:', 'http://46.137.195.183:3000'],
+      connectSrc: ["'self'", 'http://46.137.195.183:3000', 'ws://46.137.195.183:3000'],
+      fontSrc: ["'self'", 'https://cdn.jsdelivr.net', 'https://fonts.gstatic.com'],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'self'"],
+      upgradeInsecureRequests: null
+    }
+  },
+
+  // Disable HTTPS-only features when running on HTTP
+  hsts: false,
+
+  // Allow cross-origin resources
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: {
+    policy: 'cross-origin'
+  }
+};
+
+module.exports = { helmetConfig, helmetConfigHTTP };
