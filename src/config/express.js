@@ -27,8 +27,12 @@ app.set('views', path.join(__dirname, '../views'));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../../public')));
-
+// Middleware
 app.use(cookieParser());
+app.use(compression());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(authStoreLocalUser);
 
@@ -47,19 +51,17 @@ app.use(
     }
   })
 );
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts
-      styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
       imgSrc: ["'self'", 'data:', 'https:', 'http:'],
       connectSrc: ["'self'", 'http:', 'https:'],
-      fontSrc: ["'self'"],
+      fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
       frameSrc: ["'none'"]
@@ -73,8 +75,6 @@ app.use((req, res, next) => {
   res.locals.truncateContent = helper.truncateContent;
   next();
 });
-app.use(compression());
-app.use(morgan('dev'));
 
 app.use(successHandler);
 
