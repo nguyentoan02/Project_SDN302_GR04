@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    image: toannv0211/bookstore:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017/SDNTest
+      - PORT=3000
+      - JWT_SECRET=ffgsdfsk234ls@gknfd
+      - JWT_EXPIRES_IN=1h
+      - BASE_API=http://localhost:3000/api
+      - CLOUDINARY_CLOUD_NAME=dab4uej6j
+      - CLOUDINARY_API_KEY=667986783747544
+      - CLOUDINARY_API_SECRET=NQcmA_0J7CwTSJ6Jp-asOJnQA5A
+    networks:
+      - my_network
+    restart: always
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=SDNTest
+    networks:
+      - my_network
+    restart: always
+
+volumes:
+  mongo_data:
+
+networks:
+  my_network:
+    driver: bridge
