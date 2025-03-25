@@ -49,6 +49,8 @@ app.use(authStoreLocalUser);
 
 app.use((req, res, next) => {
   console.log('Middleware 1: Request received:', req.method, req.url);
+  // res.locals.API_URL = config.API_URL;
+  res.locals.NODE_ENV = process.env.NODE_ENV;
   res.locals.truncateContent = helper.truncateContent;
   next();
 });

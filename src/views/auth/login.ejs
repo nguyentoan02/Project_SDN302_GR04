@@ -15,7 +15,7 @@
       <div id="message" class="thought-bubble" style="display: none"></div>
 
       <!-- Login Form -->
-      <form id="loginForm" class="auth-section">
+      <form id="loginForm" action="/api/auth/login?redirect=<%= redirect %>" class="auth-section">
         <div id="loginSection">
           <label for="loginUsername">Email</label>
           <input
@@ -118,7 +118,7 @@
         const registerPasswordRef = document.getElementById('registerPassword');
         const confirmPasswordRef = document.getElementById('confirmPassword');
 
-        const API_URL = 'http://localhost:3000/api/auth';
+        const API_URL = '/api/auth';
 
         // Xử lý submit login form
         loginForm.addEventListener('submit', async (e) => {
