@@ -183,9 +183,9 @@ class CartController {
   }
 
   async removeItem(req, res) {
-    const { product_id } = req.body;
+    const { product_id, quantity } = req.body;
 
-    if (!product_id) {
+    if (!product_id || !quantity) {
       throw new BadRequest('Missing param!');
     }
 
@@ -200,7 +200,7 @@ class CartController {
     await Product.findByIdAndUpdate(
       product_id,
       {
-        $inc: { stock: 1 }
+        $inc: { stock: quantity }
       },
       {
         new: true
