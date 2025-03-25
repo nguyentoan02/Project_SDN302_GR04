@@ -16,6 +16,7 @@ services:
       - CLOUDINARY_CLOUD_NAME=dab4uej6j
       - CLOUDINARY_API_KEY=667986783747544
       - CLOUDINARY_API_SECRET=NQcmA_0J7CwTSJ6Jp-asOJnQA5A
+      - NODE_ENV = production
     networks:
       - my_network
     restart: always
@@ -35,6 +36,7 @@ services:
 
 volumes:
   mongo_data:
+
 
 networks:
   my_network:
