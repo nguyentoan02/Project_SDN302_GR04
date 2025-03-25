@@ -1,4 +1,5 @@
 const isDevelopment = process.env.NODE_ENV === 'development';
+const hostUrl = `http://${process.env.HOST}:${process.env.PORT}`;
 
 // Helmet Security Configuration
 const helmetConfig = {
@@ -37,7 +38,7 @@ const helmetConfig = {
         "'self'", // Allow connections to same origin
         isDevelopment
           ? 'http://localhost:3000' // Development API endpoint
-          : 'https://yourdomain.com' // Production API endpoint
+          : hostUrl // Production API endpoint
       ],
 
       // Controls font loading sources
