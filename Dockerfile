@@ -5,6 +5,8 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . . 
 
+ENV HOST=0.0.0.0
+
 COPY public ./public
 
 # Production Stage
