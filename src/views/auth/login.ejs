@@ -108,9 +108,9 @@
 
     <!-- Logic API login và register trong script -->
     <script>
-      window.APP_CONFIG = {
-        API_URL: '<%= apiUrl %>'
-      };
+      // window.APP_CONFIG = {
+      //   API_URL: '<%= apiUrl %>'
+      // };
 
       document.addEventListener('DOMContentLoaded', () => {
         const loginForm = document.getElementById('loginForm');
@@ -122,7 +122,7 @@
         const registerPasswordRef = document.getElementById('registerPassword');
         const confirmPasswordRef = document.getElementById('confirmPassword');
 
-        const API_URL = window.APP_CONFIG.API_URL + '/auth';
+        const API_URL = '/api/auth';
 
         // Xử lý submit login form
         loginForm.addEventListener('submit', async (e) => {
@@ -136,10 +136,10 @@
             const response = await fetch(`${API_URL}/login`, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
               },
-              body: JSON.stringify({ email, password }),
-              credentials: 'include' // Gửi cookie
+              body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
@@ -151,10 +151,12 @@
               normalHandStyle();
 
               setTimeout(async () => {
-                // Gọi API để lấy thông tin user (bao gồm role) từ cookie
                 const userResponse = await fetch(`${API_URL}/me`, {
                   method: 'GET',
-                  credentials: 'include' // Gửi cookie
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                  }
                 });
 
                 if (userResponse.ok) {
@@ -202,7 +204,8 @@
             const response = await fetch(`${API_URL}/register`, {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
               },
               body: JSON.stringify({ username, email, password })
             });
