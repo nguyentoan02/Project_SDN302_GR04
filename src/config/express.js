@@ -14,8 +14,13 @@ const methodOverride = require('method-override');
 const helper = require('../utils/helper');
 const session = require('express-session');
 const { authStoreLocalUser } = require('../middleware/auth');
+const { corsOptions } = require('./cors');
+const { helmetConfig } = require('./helmet');
+const { sessionConfig } = require('./session');
 
 const app = express();
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 app.use(methodOverride('_method'));
 
@@ -34,41 +39,13 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(session(sessionConfig));
+
+app.use(cors(corsOptions));
+
+app.use(helmet(helmetConfig));
+
 app.use(authStoreLocalUser);
-
-app.use(
-  session({
-    secret: 'your-secure-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.DATABASE_URL,
-      ttl: 24 * 60 * 60
-    }),
-    cookie: {
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000
-    }
-  })
-);
-
-app.use(cors());
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
-      imgSrc: ["'self'", 'data:', 'https:', 'http:'],
-      connectSrc: ["'self'", 'http:', 'https:'],
-      fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      frameSrc: ["'none'"]
-    },
-    contentSecurityPolicy: false
-  })
-);
 
 app.use((req, res, next) => {
   console.log('Middleware 1: Request received:', req.method, req.url);
