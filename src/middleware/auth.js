@@ -4,7 +4,7 @@ const User = require('../models/user');
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
 
-  console.log({ token });
+  // console.log({ token });
 
   if (!token) {
     // For page requests, redirect to login
@@ -21,7 +21,7 @@ const authMiddleware = async (req, res, next) => {
       throw new AuthenticationError('User not found');
     }
 
-    console.log('auth', { user });
+    // console.log('auth', { user });
 
     // Check token expiration
     if (Date.now() >= decoded.exp * 1000) {
