@@ -127,8 +127,8 @@
                         <div class="order-products">
                             <% order.products.forEach(item => { %>
                                 <div class="product-item">
-                                    <img src="<%= item.productId.image %>" 
-                                         alt="<%= item.productId.name %>">
+                                    <img src="<%= item?.productId?.image %>" 
+                                         alt="<%= item?.productId?.name %>">
                                     <div class="product-details">
                                         <h4><%= item.productId.name %></h4>
                                         <p>Quantity: <%= item.quantity %></p>
