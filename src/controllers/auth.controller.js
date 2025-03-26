@@ -65,18 +65,18 @@ class AuthController {
       }
 
       const result = await AuthService.login({ email, password });
-      const token = result.token; // Giả định AuthService.login trả về token
+      const token = result.token;
 
       // Gắn token vào cookie
       res.cookie('token', token, {
-        httpOnly: true, // Bảo mật, không cho JS truy cập
-        secure: process.env.NODE_ENV === 'production', // Chỉ dùng HTTPS trong production
-        maxAge: 24 * 60 * 60 * 1000 // Hết hạn sau 1 ngày
+        httpOnly: true,
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000
       });
 
       res.status(HTTP_STATUS.OK).json({
         message: MESSAGES.SUCCESS,
-        data: { email }
+        data: result.user
       });
     } catch (error) {
       res.status(error.status || HTTP_STATUS.INTERNAL_SERVER).json({
