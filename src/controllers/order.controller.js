@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const User = require('../models/user');
+const Product = require('../models/Product');
 const { BadRequest, NotFoundError } = require('../core/error');
 const { SuccessResponse } = require('../core/success');
 
