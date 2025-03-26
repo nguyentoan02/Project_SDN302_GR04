@@ -197,15 +197,15 @@ class CartController {
       }
     });
 
-    await Product.findByIdAndUpdate(
-      product_id,
-      {
-        $inc: { stock: quantity }
-      },
-      {
-        new: true
-      }
-    );
+    // await Product.findByIdAndUpdate(
+    //   product_id,
+    //   {
+    //     $inc: { stock: quantity }
+    //   },
+    //   {
+    //     new: true
+    //   }
+    // );
 
     if (!result) {
       throw new DatabaseError('Something Error!');
