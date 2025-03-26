@@ -10,7 +10,7 @@ globalAsyncHandler(router);
 router.get('/', authController.getLoginForm);
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.get('/logout', authController.logout);
+router.post('/logout', authController.logout);
 router.get('/home', authController.home);
 router.get('/profile', authMiddleware, authController.profile);
 router.put('/profile', authMiddleware, authController.updateProfile);

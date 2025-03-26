@@ -8,20 +8,17 @@ const path = require('path');
 const { successHandler } = require('../core/success');
 const { handleError } = require('../core/error');
 const router = require('../routes');
-const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const helper = require('../utils/helper');
 const session = require('express-session');
 const { authStoreLocalUser } = require('../middleware/auth');
 const { corsOptions } = require('./cors');
-const { helmetConfig } = require('./helmet');
+const { helmetConfig, helmetConfigHTTP } = require('./helmet');
 const { sessionConfig } = require('./session');
 const { apiUrl } = require('./core');
 
 const app = express();
-
-const isDevelopment = process.env.NODE_ENV === 'development';
 
 app.use(methodOverride('_method'));
 
@@ -44,7 +41,7 @@ app.use(session(sessionConfig));
 
 app.use(cors(corsOptions));
 
-app.use(helmet(helmetConfig));
+app.use(helmet(helmetConfigHTTP));
 
 app.use(authStoreLocalUser);
 
