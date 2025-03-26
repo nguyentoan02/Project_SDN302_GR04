@@ -155,17 +155,20 @@
 
               const { role } = data.data;
 
-              console.log({ data, role });
+              console.log({ data: data.data, role });
 
               if (role === 'admin') {
                 window.location.href = '/api/auth/dashboard';
-              } else {
+              } else if (role === 'user') {
                 window.location.href = '/api/auth/home';
+              } else {
+                showMessage(data?.message || 'Login failed', 'error');
+                errorStyle();
               }
             } else {
               showMessage(data?.message || 'Login failed', 'error');
               errorStyle();
-              // window.location.href = '/api/authl';
+              // window.location.href = '/api/auth';
             }
           } catch (error) {
             showMessage(error?.message || 'Something went wrong. Please try again.', 'error');
