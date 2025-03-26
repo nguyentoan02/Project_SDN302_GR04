@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const User = require('../models/user');
+const Product = require('../models/Product');
 const { BadRequest, NotFoundError } = require('../core/error');
 const { SuccessResponse } = require('../core/success');
 
@@ -31,6 +32,27 @@ class OrderController {
       quantity: item.quantity,
       price: item.product.price
     }));
+
+    for (const item of orderProducts) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        throw new NotFoundError(`Product with ID ${item.productId} not found`);
+      }
+      if (product.stock < item.quantity) {
+        throw new BadRequest(`Insufficient stock for product ${product.name}`);
+      }
+    }
+
+    // Update product stock
+    for (const item of orderProducts) {
+      await Product.findByIdAndUpdate(
+        item.productId,
+        {
+          $inc: { stock: -item.quantity }
+        },
+        { new: true }
+      );
+    }
 
     const totalAmount = orderProducts.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -78,6 +100,10 @@ class OrderController {
       .populate('userId', 'username email')
       .sort({ orderDate: -1 })
       .lean();
+
+    orders.forEach((o) => {
+      console.log({ order: o.products });
+    });
 
     return res.render('pages/order/orderHistory', {
       title: 'Order History',
