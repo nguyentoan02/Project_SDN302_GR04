@@ -60,20 +60,6 @@ class CartController {
       throw new BadRequest('Quantity over stock!');
     }
 
-    // const updateStockProduct = await Product.findByIdAndUpdate(
-    //   product_id,
-    //   {
-    //     $inc: { stock: -quantity }
-    //   },
-    //   {
-    //     new: true
-    //   }
-    // );
-
-    if (!updateStockProduct) {
-      throw new AppError('Update Stock Fail!');
-    }
-
     const _id = req.user._id;
 
     const existingCart = await User.findOne({
@@ -148,16 +134,6 @@ class CartController {
     if (!_id) {
       throw new BadRequest('Missing User Credential');
     }
-
-    // await Product.findByIdAndUpdate(
-    //   product_id,
-    //   {
-    //     $inc: { stock: -quantityUpdate }
-    //   },
-    //   {
-    //     new: true
-    //   }
-    // );
 
     const result = await User.findOneAndUpdate(
       {
