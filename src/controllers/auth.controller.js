@@ -70,7 +70,7 @@ class AuthController {
       // Gắn token vào cookie
       res.cookie('token', token, {
         httpOnly: true,
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000
       });
 
@@ -105,10 +105,7 @@ class AuthController {
   }
   async logout(req, res) {
     try {
-      res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production'
-      });
+      res.clearCookie('token');
 
       res.status(HTTP_STATUS.OK).json({
         message: MESSAGES.SUCCESS,

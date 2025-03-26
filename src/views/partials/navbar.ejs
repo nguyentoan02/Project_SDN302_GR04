@@ -238,7 +238,7 @@
             <div class="tg-dropdown-content">
               <a href="/api/auth/profile">View Profile</a>
               <a href="/api/orders/history">View Order</a>
-              <a href="/api/auth/logout" id="tg-btnlogout">Đăng xuất</a>
+              <a id="tg-btnlogout" onclick="handleLogout()">Đăng xuất</a>
             </div>
           </div>
         <% } else { %>
@@ -294,7 +294,7 @@
           e.preventDefault();
           if (confirm('Are you sure you want to logout?')) {
             fetch('/api/auth/logout', {
-              method: 'GET',
+              method: 'POST',
               credentials: 'include'
             })
               .then((response) => {
