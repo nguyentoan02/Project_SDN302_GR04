@@ -146,14 +146,14 @@
               body: JSON.stringify({ email, password })
             });
 
-            const { data } = await response.json();
+            const data = await response.json();
             console.log(data);
             if (response.ok) {
               showMessage('Login successful!', 'success');
               normalEyeStyle();
               normalHandStyle();
 
-              const { role } = data;
+              const { role } = data.data;
 
               console.log({ data, role });
 
@@ -163,12 +163,12 @@
                 window.location.href = '/api/auth/home';
               }
             } else {
-              showMessage(data.message || 'Login failed', 'error');
+              showMessage(data?.message || 'Login failed', 'error');
               errorStyle();
-              window.location.href = '/api/auth';
+              // window.location.href = '/api/authl';
             }
           } catch (error) {
-            showMessage(error.message || 'Something went wrong. Please try again.', 'error');
+            showMessage(error?.message || 'Something went wrong. Please try again.', 'error');
             errorStyle();
             console.error('Login error:', error.message);
           }
